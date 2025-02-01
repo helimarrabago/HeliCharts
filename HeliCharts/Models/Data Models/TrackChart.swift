@@ -12,7 +12,7 @@ struct TrackChart: Chart {
 
     let entries: [TrackEntry]
     let week: WeekRange
-    let type: ChartType = .track
+    let kind: ChartKind = .track
 
     init(tracks: [TrackEntry], week: WeekRange) {
         self.entries = tracks

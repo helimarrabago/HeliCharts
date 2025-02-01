@@ -15,7 +15,7 @@ struct TopChartEntryUIModel: Identifiable {
     let units: String?
     let weekNumber: String
     let week: String
-    let type: ChartType
+    let kind: ChartKind
     let chart: any Chart
 
     init(
@@ -26,7 +26,7 @@ struct TopChartEntryUIModel: Identifiable {
         units: String?,
         weekNumber: String,
         week: String,
-        type: ChartType,
+        kind: ChartKind,
         chart: some Chart
     ) {
         self.id = id
@@ -36,7 +36,7 @@ struct TopChartEntryUIModel: Identifiable {
         self.units = units
         self.weekNumber = weekNumber
         self.week = week
-        self.type = type
+        self.kind = kind
         self.chart = chart
     }
 
@@ -44,7 +44,7 @@ struct TopChartEntryUIModel: Identifiable {
         let week = chart.week
         self.id = chart.id
         self.week = week.toLongFormat()
-        self.type = chart.type
+        self.kind = chart.kind
         self.chart = chart
 
         if let topEntry = chart.getTopEntry() {
@@ -73,7 +73,7 @@ struct TopChartEntryUIModel: Identifiable {
         }
 
         let weekNumber: Int
-        switch type {
+        switch kind {
         case .track:
             weekNumber = TrackChartRepository.getWeekNumber(of: week)
         case .album:

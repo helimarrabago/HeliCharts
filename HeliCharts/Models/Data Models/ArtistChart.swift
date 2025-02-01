@@ -12,7 +12,7 @@ struct ArtistChart: Chart {
 
     let entries: [ArtistEntry]
     let week: WeekRange
-    let type: ChartType = .artist
+    let kind: ChartKind = .artist
 
     init(artists: [ArtistEntry], week: WeekRange) {
         self.entries = artists

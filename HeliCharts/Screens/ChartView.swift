@@ -84,7 +84,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
             }
         }
         .listStyle(.plain)
-        .navigationTitle(topChartEntry.type.title)
+        .navigationTitle(topChartEntry.kind.title)
         .navigationBarTitleDisplayMode(.inline)
         .task {
             chart = await viewModel.generateDetailedChart(for: topChartEntry)
@@ -152,7 +152,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
                     peak: "#1 (2x)",
                     weeks: "64",
                     parent: MockChartEntry())
-            ], type: .track, chart: MockChart())
+            ], kind: .track, chart: MockChart())
         }
         // swiftlint:enable function_body_length
     }
@@ -166,7 +166,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
             units: nil,
             weekNumber: "1",
             week: "Jan 2, 2024 - Jan 9, 2024",
-            type: .track,
+            kind: .track,
             chart: MockChart()))
     }
 }

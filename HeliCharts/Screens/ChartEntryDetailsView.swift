@@ -78,7 +78,7 @@ private extension ChartEntryDetailsView {
     }
 
     var headerImageView: some View {
-        TopChartType.track.image
+        TopChartKind.track.image
             .frame(width: 108, height: 108)
             .background(Color.blue)
             .clipShape(Circle())
@@ -216,7 +216,7 @@ private extension ChartEntryDetailsView {
         }
     }
 
-    func childEntriesView(_ childEntries: OrderedDictionary<ChartType, [ChildChartEntryUIModel]>) -> some View {
+    func childEntriesView(_ childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>) -> some View {
         ForEach(childEntries.elements, id: \.key) { element in
             Section {
                 childEntriesList(element.value)

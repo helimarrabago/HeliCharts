@@ -10,14 +10,14 @@ import Foundation
 import OrderedCollections
 
 // swiftlint:disable file_length
-protocol ChartRepository<ChartKind> {
-    associatedtype ChartKind: Chart
-    typealias ChartEntryKind = ChartKind.Entry
+protocol ChartRepository {
+    associatedtype ChartType: Chart
+    typealias ChartEntryType = ChartType.Entry
 
-    static var allCharts: CurrentValueSubject<[ChartKind], Never> { get set }
-    static var totalUnitsCache: [YearKey<ChartEntryKind>: ChartEntryUnits<ChartEntryKind>] { get set }
-    static var snapshotHistoryCache: [WeekKey<ChartEntryKind>: ChartSnapshotHistory] { get set }
-    static var overallHistoryCache: [YearKey<ChartEntryKind>: ChartOverallHistory] { get set }
+    static var allCharts: CurrentValueSubject<[ChartType], Never> { get set }
+    static var totalUnitsCache: [YearKey<ChartEntryType>: ChartEntryUnits<ChartEntryType>] { get set }
+    static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] { get set }
+    static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] { get set }
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] { get set }
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] { get set }
 }
@@ -32,52 +32,54 @@ extension ChartRepository {
         return allCharts.value.count - getIndex(of: week)!
     }
 
-    static func getSnapshotHistory(of entry: ChartEntryKind) -> ChartSnapshotHistory {
+    static func getSnapshotHistory(of entry: ChartEntryType) -> ChartEntrySnapshotHistory {
         let key = WeekKey(entry: entry, week: entry.week)
         if let cache = snapshotHistoryCache[key] {
             return cache
         }
 
+        let history: ChartEntrySnapshotHistory
         let appearancesSoFar = getAppearancesSoFar(of: entry)
-        guard appearancesSoFar.count > 1 else {
-            // Newly charted
-            let history = ChartSnapshotHistory(movement: .new, peakRank: entry.rank, weeksOnPeak: 1, weeksOnChart: 1)
-            snapshotHistoryCache[key] = history
-            return history
+
+        if appearancesSoFar.count == 1 {
+            history = ChartEntrySnapshotHistory(
+                movement: .new,
+                peak: entry.rank,
+                weeksOnPeak: 1,
+                weeksOnChart: 1)
+        } else {
+            let (peak, weeksOnPeak) = getPeakRank(among: appearancesSoFar)
+            history = ChartEntrySnapshotHistory(
+                movement: getMovement(of: entry, from: appearancesSoFar[1]),
+                peak: peak,
+                weeksOnPeak: weeksOnPeak,
+                weeksOnChart: appearancesSoFar.count)
         }
 
-        let peakRank = getPeakRank(among: appearancesSoFar)
-        let history = ChartSnapshotHistory(
-            movement: getMovement(of: entry, from: appearancesSoFar[1]),
-            peakRank: peakRank,
-            weeksOnPeak: getWeeks(onPeak: peakRank, among: appearancesSoFar),
-            weeksOnChart: appearancesSoFar.count)
         snapshotHistoryCache[key] = history
-
         return history
     }
 
-    static func getOverallHistory(of entry: ChartEntryKind, year: Int?) -> ChartOverallHistory {
+    static func getOverallHistory(of entry: ChartEntryType, year: Int?) -> ChartOverallHistory {
         let key = YearKey(entry: entry, year: year)
         if let cache = overallHistoryCache[key] {
             return cache
         }
 
-        let allAppearances = getAllAppearances(of: entry, year: year)
+        let history: ChartOverallHistory
+        let allAppearances = getAllAppearances(of: entry, in: year)
         let childEntries = getChildEntries(of: entry, year: year)
 
-        guard allAppearances.count > 1 else {
-            // Newly charted
+        if allAppearances.count == 1 {
             let units = entry.computeUnits(weeks: 1)
-            let certifications = getCertifications(for: entry, totalUnits: units.total)
+            let certifications = generateCertifications(for: entry, totalUnits: units.total)
             let position = ChartPosition(
                 rank: entry.rank,
                 units: units.total,
                 runningUnits: units.total,
                 date: Date(timeIntervalSince1970: TimeInterval(entry.week.from)),
                 weekNumber: getWeekNumber(of: entry.week))
-
-            let history = ChartOverallHistory(
+            history = ChartOverallHistory(
                 parent: entry,
                 peak: entry.rank,
                 weeksOnPeak: 1,
@@ -88,35 +90,29 @@ extension ChartRepository {
                 certifications: certifications,
                 chartRun: [.charted(position: position)],
                 childEntries: childEntries)
-            overallHistoryCache[key] = history
-
-            return history
+        } else {
+            let (peak, weeksOnPeak) = getPeakRank(among: allAppearances)
+            let units = computeTotalUnits(among: allAppearances, in: nil)
+            let certifications = generateCertifications(for: entry, totalUnits: units.total)
+            history = ChartOverallHistory(
+                parent: entry,
+                peak: peak,
+                weeksOnPeak: weeksOnPeak,
+                weeksOnChart: allAppearances.count,
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
+                certifications: certifications,
+                chartRun: getChartRun(of: entry, in: year),
+                childEntries: childEntries)
         }
 
-        let peakRank = getPeakRank(among: allAppearances)
-        let units = computeTotalUnits(among: allAppearances, year: nil)
-        let certifications = getCertifications(for: entry, totalUnits: units.total)
-
-        let history = ChartOverallHistory(
-            parent: entry,
-            peak: peakRank,
-            weeksOnPeak: getWeeks(onPeak: peakRank, among: allAppearances),
-            weeksOnChart: allAppearances.count,
-            streams: units.streamsEquivalent,
-            sales: units.sales,
-            totalUnits: units.total,
-            certifications: certifications,
-            chartRun: getChartRun(of: entry, year: year),
-            childEntries: childEntries)
         overallHistoryCache[key] = history
-
         return history
     }
 
-    static func getAppearancesSoFar(of entry: ChartEntryKind) -> [ChartEntryKind] {
-        guard allCharts.value.count > 1, let weekIndex = getIndex(of: entry.week) else {
-            return [entry]
-        }
+    static func getAppearancesSoFar(of entry: ChartEntryType) -> [ChartEntryType] {
+        guard allCharts.value.count > 1, let weekIndex = getIndex(of: entry.week) else { return [entry] }
 
         let chartsSoFar = Array(allCharts.value.suffix(from: weekIndex))
         let appearancesSoFar = chartsSoFar.compactMap { $0.getSameEntry(as: entry) }
@@ -126,9 +122,9 @@ extension ChartRepository {
 }
 
 private extension ChartRepository {
-    static func getAllAppearances(of entry: ChartEntryKind, year: Int?) -> [ChartEntryKind] {
-        let charts: [ChartKind]
-        if let year = year {
+    static func getAllAppearances(of entry: ChartEntryType, in year: Int?) -> [ChartEntryType] {
+        let charts: [ChartType]
+        if let year {
             charts = getCharts(in: year)
         } else {
             charts = allCharts.value
@@ -143,8 +139,8 @@ private extension ChartRepository {
     }
 
     static func getMovement(
-        of entry: ChartEntryKind,
-        from previousAppearance: ChartEntryKind
+        of entry: ChartEntryType,
+        from previousAppearance: ChartEntryType
     ) -> ChartMovement {
         guard previousAppearance.week.isImmediatelyBefore(week: entry.week) else {
             return .reappear // Re-appeared
@@ -162,63 +158,44 @@ private extension ChartRepository {
         }
     }
 
-    static func getPeakRank(among appearances: [ChartEntryKind]) -> Int {
-        let allRanks = appearances.map { $0.rank }
-        return allRanks.min() ?? 0
-    }
-
-    static func getWeeks(onPeak peak: Int, among appearances: [ChartEntryKind]) -> Int {
-        let weeksOnPeak = appearances.filter { $0.rank == peak }.count
-        return weeksOnPeak
+    static func getPeakRank(among appearances: [ChartEntryType]) -> (peak: Int, weeks: Int) {
+        let peak = appearances.map { $0.rank }.min()!
+        let weeks = appearances.filter { $0.rank == peak }.count
+        return (peak, weeks)
     }
 
     static func computeTotalUnits(
-        among appearances: [ChartEntryKind],
-        year: Int?
-    ) -> ChartEntryUnits<ChartEntryKind> {
+        among appearances: [ChartEntryType],
+        in year: Int?
+    ) -> ChartEntryUnits<ChartEntryType> {
         let key = YearKey(entry: appearances[0], year: year)
         if let cache = totalUnitsCache[key] {
             return cache
         }
 
-        let minChartUnits = ChartEntryKind.computeUnits(rank: 100, playCount: 1, weeks: 1)
-        let maxAllowedStreams = Double(minChartUnits.streams) * 0.3
-        let maxAllowedSales = Double(minChartUnits.sales) * 0.3
-
-        var previousWeekNumber: Int?; var previousUnits: ChartEntryUnits<ChartEntryKind>?
-        var totalUnits = ChartEntryUnits<ChartEntryKind>(streams: 0, sales: 0)
+        var lastWeekNumber: Int?; var lastUnits: ChartEntryUnits<ChartEntryType>?
+        var totalUnits = ChartEntryUnits<ChartEntryType>(streams: 0, sales: 0)
 
         for (index, appearance) in appearances.enumerated() {
             let currentWeekNumber = getWeekNumber(of: appearance.week)
-            let weeks = index + 1
+            let weeksOnChart = index + 1
 
-            if let previousWeekNumber, let previousUnits {
-                let weeksOffChart = currentWeekNumber - previousWeekNumber - 1
+            if let lastWeekNumber, let lastUnits {
+                let weeksOffChart = currentWeekNumber - lastWeekNumber - 1
                 if weeksOffChart > 0 {
-                    for week in 1...weeksOffChart {
-                        let weeklyDecay = pow(0.7, Double(week - 1))
-                        let longevityBonus = ChartEntryKind.computeLongevityBonus(weeks: weeks + week)
-
-                        var offChartStreams = Double(previousUnits.streams) * weeklyDecay
-                        offChartStreams = min(offChartStreams, maxAllowedStreams)
-                        offChartStreams = max(offChartStreams, 4_000)
-                        offChartStreams *= longevityBonus
-
-                        var offChartSales = Double(previousUnits.sales) * weeklyDecay
-                        offChartSales = min(offChartSales, maxAllowedSales)
-                        offChartSales = max(offChartSales, 2_000)
-                        offChartSales *= longevityBonus
-
-                        totalUnits = ChartEntryUnits(
-                            streams: totalUnits.streams + Int(offChartStreams),
-                            sales: totalUnits.sales + Int(offChartSales))
-                    }
+                    let units = computeOffChartUnits(
+                        weeksOffChart: weeksOffChart,
+                        weeksOnChart: weeksOnChart,
+                        lastUnits: lastUnits)
+                    totalUnits = ChartEntryUnits(
+                        streams: totalUnits.streams + units.streams,
+                        sales: totalUnits.sales + units.sales)
                 }
             }
 
-            let units = appearance.computeUnits(weeks: weeks)
-            previousUnits = units
-            previousWeekNumber = currentWeekNumber
+            let units = appearance.computeUnits(weeks: weeksOnChart)
+            lastUnits = units
+            lastWeekNumber = currentWeekNumber
 
             totalUnits = ChartEntryUnits(
                 streams: totalUnits.streams + units.streams,
@@ -229,7 +206,40 @@ private extension ChartRepository {
         return totalUnits
     }
 
-    static func getCertifications(for entry: any ChartEntry, totalUnits: Int) -> [Certification]? {
+    static func computeOffChartUnits(
+        weeksOffChart: Int,
+        weeksOnChart: Int,
+        lastUnits: ChartEntryUnits<ChartEntryType>
+    ) -> ChartEntryUnits<ChartEntryType> {
+        var units = ChartEntryUnits<ChartEntryType>(streams: 0, sales: 0)
+
+        let minChartUnits = ChartEntryType.computeUnits(rank: 100, playCount: 1, weeks: 1)
+        let maxAllowedStreams = Double(minChartUnits.streams) * 0.3
+        let maxAllowedSales = Double(minChartUnits.sales) * 0.3
+
+        for week in 1...weeksOffChart {
+            let weeklyDecay = pow(0.7, Double(week - 1))
+            let longevityBonus = ChartEntryType.computeLongevityBonus(weeks: weeksOnChart + week)
+
+            var offChartStreams = Double(lastUnits.streams) * weeklyDecay
+            offChartStreams = min(offChartStreams, maxAllowedStreams)
+            offChartStreams = max(offChartStreams, 4_000)
+            offChartStreams *= longevityBonus
+
+            var offChartSales = Double(lastUnits.sales) * weeklyDecay
+            offChartSales = min(offChartSales, maxAllowedSales)
+            offChartSales = max(offChartSales, 2_000)
+            offChartSales *= longevityBonus
+
+            units = ChartEntryUnits(
+                streams: units.streams + Int(offChartStreams),
+                sales: units.sales + Int(offChartSales))
+        }
+
+        return units
+    }
+
+    static func generateCertifications(for entry: ChartEntryType, totalUnits: Int) -> [Certification]? {
         guard !(entry is ArtistEntry) else { return nil }
 
         let diamondUnits = 10_000_000
@@ -261,11 +271,10 @@ private extension ChartRepository {
         return certifications
     }
 
-    static func getChartRun(of entry: ChartEntryKind, year: Int?) -> [ChartRunSnapshot] {
+    static func getChartRun(of entry: ChartEntryType, in year: Int?) -> [ChartRunSnapshot] {
         var chartRun: [ChartRunSnapshot] = []
         var runningUnits = 0
 
-        // Get all charts from the first appearance to the last
         var allAppearances = Array(allCharts.value.reversed())
         guard
             let firstAppearance = allAppearances.firstIndex(where: { chart in
@@ -287,29 +296,37 @@ private extension ChartRepository {
         }
         allAppearances = Array(allAppearances[firstAppearance...lastAppearance])
 
-        var outOfChartCount = 0
-        var weeks = 0
+        var weeksOnChart = 0; var weeksOffChart = 0
+        var lastUnits: ChartEntryUnits<ChartEntryType>?
+
         allAppearances.forEach { chart in
             if let entry = chart.getSameEntry(as: entry) {
-                weeks += 1
+                weeksOnChart += 1
 
-                if outOfChartCount > 0 {
-                    chartRun.append(.outOfChart(count: outOfChartCount))
-                    outOfChartCount = 0
+                if let lastUnits, weeksOffChart > 0 {
+                    let units = computeOffChartUnits(
+                        weeksOffChart: weeksOffChart,
+                        weeksOnChart: weeksOnChart,
+                        lastUnits: lastUnits)
+                    runningUnits += units.total
+
+                    chartRun.append(.outOfChart(count: weeksOffChart))
+                    weeksOffChart = 0
                 }
 
-                let units = entry.computeUnits(weeks: weeks).total
-                runningUnits += units
+                let units = entry.computeUnits(weeks: weeksOnChart)
+                lastUnits = units
+                runningUnits += units.total
+
                 let position = ChartPosition(
                     rank: entry.rank,
-                    units: units,
+                    units: units.total,
                     runningUnits: runningUnits,
                     date: Date(timeIntervalSince1970: TimeInterval(chart.week.to)),
                     weekNumber: getWeekNumber(of: chart.week))
-
                 chartRun.append(.charted(position: position))
             } else {
-                outOfChartCount += 1
+                weeksOffChart += 1
             }
         }
 
@@ -317,10 +334,10 @@ private extension ChartRepository {
     }
 
     static func getChildEntries(
-        of entry: ChartEntryKind,
+        of entry: ChartEntryType,
         year: Int?
-    ) -> OrderedDictionary<ChartType, [ChildChartEntry]>? {
-        let childEntries: OrderedDictionary<ChartType, [any ChartEntry]>
+    ) -> OrderedDictionary<ChartKind, [ChildChartEntry]>? {
+        let childEntries: OrderedDictionary<ChartKind, [any ChartEntry]>
         if entry is ArtistEntry {
             var albumCharts = AlbumChartRepository.allCharts.value
             var trackCharts = TrackChartRepository.allCharts.value
@@ -355,7 +372,7 @@ private extension ChartRepository {
             return nil
         }
 
-        var rankedChildEntries: OrderedDictionary<ChartType, [ChildChartEntry]> = [:]
+        var rankedChildEntries: OrderedDictionary<ChartKind, [ChildChartEntry]> = [:]
         for (chartType, entries) in childEntries {
             let aggregates: [ChartEntryAggregate]
             switch chartType {
@@ -363,17 +380,17 @@ private extension ChartRepository {
                 guard let tracks = entries as? [TrackEntry] else {
                     fatalError("Specify tracks for track chart type.")
                 }
-                aggregates = aggregateEntries(tracks, by: .totalUnits, year: year, limit: nil)
+                aggregates = TrackChartRepository.aggregateEntries(tracks, by: .totalUnits, year: year)
             case .album:
                 guard let albums = entries as? [AlbumEntry] else {
                     fatalError("Specify albums for album chart type.")
                 }
-                aggregates = aggregateEntries(albums, by: .totalUnits, year: year, limit: nil)
+                aggregates = AlbumChartRepository.aggregateEntries(albums, by: .totalUnits, year: year)
             case .artist:
                 guard let artists = entries as? [ArtistEntry] else {
                     fatalError("Specify artists for artist chart type.")
                 }
-                aggregates = aggregateEntries(artists, by: .totalUnits, year: year, limit: nil)
+                aggregates = ArtistChartRepository.aggregateEntries(artists, by: .totalUnits, year: year)
             }
 
             rankedChildEntries[chartType] = aggregates.map { aggregate in
@@ -449,17 +466,17 @@ extension ChartRepository {
 }
 
 private extension ChartRepository {
-    static func getCharts(in year: Int) -> [ChartKind] {
+    static func getCharts(in year: Int) -> [ChartType] {
         let yearlyCharts = allCharts.value.filter { $0.week.isInYear(year) }
         return yearlyCharts
     }
 
     // swiftlint:disable function_body_length
-    static func aggregateEntries<ChartEntryType: ChartEntry>(
+    static func aggregateEntries(
         _ entries: [ChartEntryType],
         by metric: ChartMetric,
-        year: Int?,
-        limit: Int?
+        year: Int? = nil,
+        limit: Int? = nil
     ) -> [ChartEntryAggregate] {
         var snapshotAggregates: [String: ChartEntryAggregateSnapshot<ChartEntryType>] = [:]
 
@@ -498,31 +515,8 @@ private extension ChartRepository {
 
         let rawAggregates = snapshotAggregates.mapValues { snapshot in
             let appearances = snapshot.appearances
-
-            let streams: Int
-            let sales: Int
-            let totalUnits: Int
-
-            if let tracks = appearances as? [TrackEntry] {
-                let units = TrackChartRepository.computeTotalUnits(among: tracks, year: year)
-                streams = units.streamsEquivalent
-                sales = units.sales
-                totalUnits = units.total
-            } else if let albums = appearances as? [AlbumEntry] {
-                let units = AlbumChartRepository.computeTotalUnits(among: albums, year: year)
-                streams = units.streamsEquivalent
-                sales = units.sales
-                totalUnits = units.total
-            } else if let artists = appearances as? [ArtistEntry] {
-                let units = ArtistChartRepository.computeTotalUnits(among: artists, year: year)
-                streams = units.streamsEquivalent
-                sales = units.sales
-                totalUnits = units.total
-            } else {
-                fatalError("Use a known ChartEntry type.")
-            }
-
-            let certifications = getCertifications(for: snapshot.parent, totalUnits: totalUnits)
+            let units = computeTotalUnits(among: appearances, in: year)
+            let certifications = generateCertifications(for: snapshot.parent, totalUnits: units.total)
 
             return ChartEntryAggregate(
                 parent: snapshot.parent,
@@ -530,9 +524,9 @@ private extension ChartRepository {
                 peak: snapshot.peak,
                 weeksOnPeak: snapshot.weeksOnPeak,
                 weeksOnChart: snapshot.weeksOnChart,
-                streams: streams,
-                sales: sales,
-                totalUnits: totalUnits,
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
                 certifications: certifications)
         }
 

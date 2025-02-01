@@ -11,7 +11,7 @@ struct AllTimeChartsView<ViewModel: AllTimeChartsViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @State private var loading = true
     @State private var chartMetric: ChartMetric = .totalUnits
-    @State private var chartType: ChartType = .track
+    @State private var chartKind: ChartKind = .track
     @State private var tracks: [AllTimeChartEntryUIModel] = []
     @State private var albums: [AllTimeChartEntryUIModel] = []
     @State private var artists: [AllTimeChartEntryUIModel] = []
@@ -28,7 +28,7 @@ struct AllTimeChartsView<ViewModel: AllTimeChartsViewModelProtocol>: View {
                 self.loading = false
             }
         }
-        .onChange(of: chartType) { _, _ in
+        .onChange(of: chartKind) { _, _ in
             Task {
                 await generateAllTimeChart()
             }
@@ -41,7 +41,7 @@ struct AllTimeChartsView<ViewModel: AllTimeChartsViewModelProtocol>: View {
     }
 
     private func generateAllTimeChart() async {
-        switch chartType {
+        switch chartKind {
         case .track:
             let tracks = await viewModel.generateAllTimeTrackChart(metric: chartMetric)
             withAnimation {
@@ -69,7 +69,7 @@ private extension AllTimeChartsView {
         } else {
             List {
                 Section {
-                    switch chartType {
+                    switch chartKind {
                     case .track: chartList(for: tracks)
                     case .album: chartList(for: albums)
                     case .artist: chartList(for: artists)
@@ -77,7 +77,7 @@ private extension AllTimeChartsView {
                 } header: {
                     VStack(alignment: .leading, spacing: 2) {
                         chartMetricPicker
-                        chartTypePicker
+                        chartKindPicker
                     }
                     .padding(.bottom, 4)
                 }
@@ -100,9 +100,9 @@ private extension AllTimeChartsView {
         }
     }
 
-    var chartTypePicker: some View {
-        Picker("Chart type", selection: $chartType.animation()) {
-            ForEach(ChartType.allCases, id: \.self) { type in
+    var chartKindPicker: some View {
+        Picker("Chart type", selection: $chartKind.animation()) {
+            ForEach(ChartKind.allCases, id: \.self) { type in
                 type.image
             }
         }

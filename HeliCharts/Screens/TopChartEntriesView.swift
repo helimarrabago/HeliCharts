@@ -10,7 +10,7 @@ import SwiftUI
 struct TopChartEntriesView<ViewModel: TopChartEntriesViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @State private var loading = true
-    @State private var chartType: TopChartType = .track
+    @State private var chartType: TopChartKind = .track
     @State private var user: UserUIModel?
     @State private var topTracks: [TopChartEntryUIModel] = []
     @State private var topAlbums: [TopChartEntryUIModel] = []
@@ -89,7 +89,7 @@ private extension TopChartEntriesView {
 
     var chartTypePicker: some View {
         Picker("Select chart type", selection: $chartType.animation()) {
-            ForEach(TopChartType.allCases, id: \.self) { type in
+            ForEach(TopChartKind.allCases, id: \.self) { type in
                 type.image
             }
         }
@@ -114,7 +114,7 @@ private extension TopChartEntriesView {
                         }
 
                         if let title = chart.title {
-                            Text(chart.type.emoji + " " + title)
+                            Text(chart.kind.emoji + " " + title)
                                 .font(.headline)
                         } else {
                             placeholderText
@@ -163,7 +163,7 @@ private extension TopChartEntriesView {
                    let artistTitle = chart.artistTitle,
                    let artistUnits = chart.artistUnits {
                     VStack(alignment: .leading) {
-                        Text(ChartType.track.emoji + " " + trackTitle)
+                        Text(ChartKind.track.emoji + " " + trackTitle)
                             .font(.callout)
                             .fontWeight(.semibold)
 
@@ -172,7 +172,7 @@ private extension TopChartEntriesView {
                     }
 
                     VStack(alignment: .leading) {
-                        Text(ChartType.album.emoji + " " + albumTitle)
+                        Text(ChartKind.album.emoji + " " + albumTitle)
                             .font(.callout)
                             .fontWeight(.semibold)
 
@@ -181,7 +181,7 @@ private extension TopChartEntriesView {
                     }
 
                     VStack(alignment: .leading) {
-                        Text(ChartType.artist.emoji + " " + artistTitle)
+                        Text(ChartKind.artist.emoji + " " + artistTitle)
                             .font(.callout)
                             .fontWeight(.semibold)
 
@@ -214,7 +214,7 @@ private extension TopChartEntriesView {
             units: "210,000",
             weekNumber: "1",
             week: "Jan 2, 2025 - Jan 9, 2025",
-            type: .track,
+            kind: .track,
             chart: MockChart())
         let topAlbum = TopChartEntryUIModel(
             id: "",
@@ -224,7 +224,7 @@ private extension TopChartEntriesView {
             units: "510,000",
             weekNumber: "1",
             week: "Jan 2, 2025 - Jan 9, 2025",
-            type: .album,
+            kind: .album,
             chart: MockChart())
         let topArtist = TopChartEntryUIModel(
             id: "",
@@ -234,7 +234,7 @@ private extension TopChartEntriesView {
             units: "810,000",
             weekNumber: "1",
             week: "Jan 2, 2025 - Jan 9, 2025",
-            type: .artist,
+            kind: .artist,
             chart: MockChart())
 
         func fetchUser() async -> UserUIModel {

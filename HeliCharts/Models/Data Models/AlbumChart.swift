@@ -12,7 +12,7 @@ struct AlbumChart: Chart {
 
     let entries: [AlbumEntry]
     let week: WeekRange
-    let type: ChartType = .album
+    let kind: ChartKind = .album
 
     init(albums: [AlbumEntry], week: WeekRange) {
         self.entries = albums

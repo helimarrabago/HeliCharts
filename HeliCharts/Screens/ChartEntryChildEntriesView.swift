@@ -9,7 +9,7 @@ import OrderedCollections
 import SwiftUI
 
 struct ChartEntryChildEntriesView: View {
-    let entries: OrderedDictionary<ChartType, [ChildChartEntryUIModel]>.Element
+    let entries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>.Element
     let year: Int?
 
     var body: some View {

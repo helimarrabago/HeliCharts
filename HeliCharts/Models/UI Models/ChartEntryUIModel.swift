@@ -62,7 +62,7 @@ struct ChartEntryUIModel: Identifiable {
         }()
 
         self.movement = ChartMovementUIModel(movement: history.movement)
-        self.peak = "#\(history.peakRank) (\(history.weeksOnPeak)x)"
+        self.peak = "#\(history.peak) (\(history.weeksOnPeak)x)"
         self.weeks = String(history.weeksOnChart)
 
         let units = entry.computeUnits(weeks: history.weeksOnChart)

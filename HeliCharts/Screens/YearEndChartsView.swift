@@ -13,7 +13,7 @@ struct YearEndChartsView<ViewModel: YearEndChartsViewModelProtocol>: View {
     @State private var years: [Int] = []
     @State private var selectedYear: Int = 0
     @State private var chartMetric: ChartMetric = .totalUnits
-    @State private var chartType: ChartType = .track
+    @State private var chartKind: ChartKind = .track
     @State private var tracks: [YearEndChartEntryUIModel] = []
     @State private var albums: [YearEndChartEntryUIModel] = []
     @State private var artists: [YearEndChartEntryUIModel] = []
@@ -42,7 +42,7 @@ struct YearEndChartsView<ViewModel: YearEndChartsViewModelProtocol>: View {
                 await generateYearEndChart()
             }
         }
-        .onChange(of: chartType) { _, _ in
+        .onChange(of: chartKind) { _, _ in
             Task {
                 await generateYearEndChart()
             }
@@ -50,7 +50,7 @@ struct YearEndChartsView<ViewModel: YearEndChartsViewModelProtocol>: View {
     }
 
     private func generateYearEndChart() async {
-        switch chartType {
+        switch chartKind {
         case .track:
             let tracks = await viewModel.generateYearEndTrackChart(for: selectedYear, metric: chartMetric)
             withAnimation {
@@ -78,7 +78,7 @@ private extension YearEndChartsView {
         } else {
             List {
                 Section {
-                    switch chartType {
+                    switch chartKind {
                     case .track: chartList(for: tracks)
                     case .album: chartList(for: albums)
                     case .artist: chartList(for: artists)
@@ -89,7 +89,7 @@ private extension YearEndChartsView {
                             yearsPicker
                             chartMetricPicker
                         }
-                        chartTypePicker
+                        chartKindPicker
                     }
                     .padding(.bottom, 4)
                 }
@@ -126,9 +126,9 @@ private extension YearEndChartsView {
         }
     }
 
-    var chartTypePicker: some View {
-        Picker("Chart type", selection: $chartType.animation()) {
-            ForEach(ChartType.allCases, id: \.self) { type in
+    var chartKindPicker: some View {
+        Picker("Chart type", selection: $chartKind.animation()) {
+            ForEach(ChartKind.allCases, id: \.self) { type in
                 type.image
             }
         }

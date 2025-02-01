@@ -13,7 +13,7 @@ struct WeekRange: Hashable {
     let to: Int // swiftlint:disable:this identifier_name
 }
 
-enum ChartType: CaseIterable, Hashable {
+enum ChartKind: CaseIterable, Hashable {
     case track
     case album
     case artist
@@ -51,7 +51,7 @@ enum ChartType: CaseIterable, Hashable {
     }
 }
 
-enum TopChartType: CaseIterable {
+enum TopChartKind: CaseIterable {
     case track
     case album
     case artist
@@ -81,9 +81,9 @@ enum ChartMetric: CaseIterable, Hashable {
     }
 }
 
-struct ChartSnapshotHistory {
+struct ChartEntrySnapshotHistory {
     let movement: ChartMovement
-    let peakRank: Int
+    let peak: Int
     let weeksOnPeak: Int
     let weeksOnChart: Int
 }
@@ -106,7 +106,7 @@ struct ChartOverallHistory {
     let totalUnits: Int
     let certifications: [Certification]?
     let chartRun: [ChartRunSnapshot]
-    let childEntries: OrderedDictionary<ChartType, [ChildChartEntry]>?
+    let childEntries: OrderedDictionary<ChartKind, [ChildChartEntry]>?
 }
 
 enum Certification: Hashable {

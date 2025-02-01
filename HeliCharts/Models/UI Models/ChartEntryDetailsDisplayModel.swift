@@ -19,7 +19,7 @@ struct ChartEntryDetailsUIModel {
     let peak: String
     let certifications: [Certification]?
     let chartRun: [ChartRunSnapshotUIModel]
-    let childEntries: OrderedDictionary<ChartType, [ChildChartEntryUIModel]>?
+    let childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>?
     let parent: any ChartEntry
 
     var artistName: String? {
@@ -37,7 +37,7 @@ struct ChartEntryDetailsUIModel {
         peak: String,
         certifications: [Certification]?,
         chartRun: [ChartRunSnapshotUIModel],
-        childEntries: OrderedDictionary<ChartType, [ChildChartEntryUIModel]>?,
+        childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>?,
         parent: any ChartEntry
     ) {
         self.id = id
@@ -81,7 +81,7 @@ struct ChartEntryDetailsUIModel {
         self.chartRun = history.chartRun.map { ChartRunSnapshotUIModel(snapshot: $0) }
 
         if let entries = history.childEntries {
-            var childEntries: OrderedDictionary<ChartType, [ChildChartEntryUIModel]> = [:]
+            var childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]> = [:]
             for (chartType, entries) in entries {
                 guard !entries.isEmpty else { continue }
                 childEntries[chartType] = entries.map { ChildChartEntryUIModel(entry: $0) }

@@ -11,14 +11,14 @@ struct ChartUIModel {
     let id: String
     let week: String
     let entries: [ChartEntryUIModel]
-    let type: ChartType
+    let kind: ChartKind
     let chart: any Chart
 
-    init(id: String, week: String, entries: [ChartEntryUIModel], type: ChartType, chart: some Chart) {
+    init(id: String, week: String, entries: [ChartEntryUIModel], kind: ChartKind, chart: some Chart) {
         self.id = id
         self.week = week
         self.entries = entries
-        self.type = type
+        self.kind = kind
         self.chart = chart
     }
 
@@ -26,7 +26,7 @@ struct ChartUIModel {
         self.id = topEntry.id
         self.week = topEntry.week
         self.entries = topEntry.chart.entries.map { ChartEntryUIModel(entry: $0) }
-        self.type = topEntry.type
+        self.kind = topEntry.kind
         self.chart = topEntry.chart
     }
 }
