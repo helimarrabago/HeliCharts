@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 struct AlbumResponse: Decodable {
     let album: Metadata
 
@@ -25,3 +26,4 @@ struct AlbumResponse: Decodable {
         }
     }
 }
+// swiftlint:enable nesting

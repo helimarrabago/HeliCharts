@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 struct AlbumChartResponse: Decodable {
     let weeklyalbumchart: Metadata
 
@@ -51,7 +52,8 @@ struct AlbumChartResponse: Decodable {
 
         struct Attributes: Decodable {
             let from: String
-            let to: String
+            let to: String // swiftlint:disable:this identifier_name
         }
     }
 }
+// swiftlint:enable nesting

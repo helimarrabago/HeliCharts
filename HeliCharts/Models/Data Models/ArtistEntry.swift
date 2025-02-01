@@ -56,23 +56,25 @@ extension ArtistEntry: Hashable {
 }
 
 extension ArtistEntry {
-    func computeUnits(weeks: Int) -> ChartEntryUnits {
-        let longevityBonus = 1 + 0.01 * log(Double(weeks) + 1)
+    static var streamConversionRate: Int {
+        return 1_500
+    }
+
+    static func computeUnits(rank: Int, playCount: Int = 1, weeks: Int) -> ChartEntryUnits<Self> {
         let rank = Double(rank); let maxRank = Double(Settings.albumChartLimit)
         let logRank = log(rank + 0.01); let logMaxRank = log(maxRank)
+
         let playCount = Double(playCount)
+        let longevityBonus = computeLongevityBonus(weeks: weeks)
 
         var streams = (56 + 196 * (1 - (logRank / logMaxRank))) * 1_000_000
-        streams = streams + pow(playCount, 1.4) * 1_000_000
-        streams = streams * longevityBonus / 1_500
+        streams += pow(playCount, 1.4) * 1_000_000
+        streams *= longevityBonus / Double(streamConversionRate)
 
         var sales = (150 + 350 * (1 - (logRank / logMaxRank))) * 1_000
-        sales = sales + pow(playCount, 1.2) * 3_000
-        sales = sales * longevityBonus
+        sales += pow(playCount, 1.2) * 3_000
+        sales *= longevityBonus
 
-        return ChartEntryUnits(
-            streams: Int(streams),
-            streamsEquivalent: Int(streams * 1_500),
-            sales: Int(sales))
+        return ChartEntryUnits(streams: Int(streams), sales: Int(sales))
     }
 }

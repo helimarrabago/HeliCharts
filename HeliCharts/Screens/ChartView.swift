@@ -94,6 +94,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
 
 #Preview {
     final class MockViewModel: ChartsViewModelProtocol {
+        // swiftlint:disable function_body_length
         func generateDetailedChart(for topChart: TopChartEntryUIModel) async -> ChartUIModel {
             return ChartUIModel(id: "", week: "Jan 10, 2024 to Jan 16, 2024", entries: [
                 ChartEntryUIModel(
@@ -153,6 +154,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
                     parent: MockChartEntry())
             ], type: .track, chart: MockChart())
         }
+        // swiftlint:enable function_body_length
     }
 
     return NavigationView {

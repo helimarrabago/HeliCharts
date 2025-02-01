@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 struct TrackChartResponse: Decodable {
     let weeklytrackchart: Metadata
 
@@ -51,7 +52,8 @@ struct TrackChartResponse: Decodable {
 
         struct Attributes: Decodable {
             let from: String
-            let to: String
+            let to: String // swiftlint:disable:this identifier_name
         }
     }
 }
+// swiftlint:enable nesting

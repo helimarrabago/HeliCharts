@@ -8,6 +8,7 @@
 import OrderedCollections
 import SwiftUI
 
+// swiftlint:disable file_length
 struct ChartEntryDetailsView<ViewModel: ChartEntryDetailsViewModelProtocol>: View {
     let entry: any ChartEntry
     let year: Int?
@@ -63,86 +64,101 @@ private extension ChartEntryDetailsView {
     func headerView(details: ChartEntryDetailsUIModel) -> some View {
         Section {
             HStack(spacing: 16) {
-                TopChartType.track.image
-                    .frame(width: 108, height: 108)
-                    .background(Color.blue)
-                    .clipShape(Circle())
-
+                headerImageView
                 VStack(alignment: .leading) {
                     if let artistName = details.artistName {
-                        HStack(alignment: .bottom) {
-                            Text("ARTIST")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-
-                            Text(artistName)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
+                        headerArtistNameView(name: artistName)
                     }
-
-                    HStack {
-                        HStack(alignment: .bottom) {
-                            Text("PEAK")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-
-                            Text(details.peak)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
-
-                        HStack(alignment: .bottom) {
-                            Text("WEEKS")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-
-                            Text(details.weeks)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
-                    }
-
-                    HStack {
-                        HStack(alignment: .bottom) {
-                            Text("STREAMS")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-
-                            Text(details.streams)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
-
-                        HStack(alignment: .bottom) {
-                            Text("SALES")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.secondary)
-
-                            Text(details.sales)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
-                    }
-
-                    HStack(alignment: .bottom) {
-                        Text("TOTAL UNITS")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.secondary)
-
-                        Text(details.totalUnits)
-                            .font(.subheadline)
-                            .fontWeight(.bold)
-                    }
+                    headerPeakAndWeeksView(peak: details.peak, weeks: details.weeks)
+                    headerUnitsView(streams: details.streams, sales: details.sales, total: details.totalUnits)
                 }
             }
             .padding([.horizontal, .top])
+        }
+    }
+
+    var headerImageView: some View {
+        TopChartType.track.image
+            .frame(width: 108, height: 108)
+            .background(Color.blue)
+            .clipShape(Circle())
+    }
+
+    func headerArtistNameView(name: String) -> some View {
+        HStack(alignment: .bottom) {
+            Text("ARTIST")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
+
+            Text(name)
+                .font(.subheadline)
+                .fontWeight(.bold)
+        }
+    }
+
+    func headerPeakAndWeeksView(peak: String, weeks: String) -> some View {
+        HStack {
+            HStack(alignment: .bottom) {
+                Text("PEAK")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+                Text(peak)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+            }
+
+            HStack(alignment: .bottom) {
+                Text("WEEKS")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+                Text(weeks)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+            }
+        }
+    }
+
+    func headerUnitsView(streams: String, sales: String, total: String) -> some View {
+        Group {
+            HStack {
+                HStack(alignment: .bottom) {
+                    Text("STREAMS")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+
+                    Text(streams)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                }
+
+                HStack(alignment: .bottom) {
+                    Text("SALES")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+
+                    Text(sales)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                }
+            }
+
+            HStack(alignment: .bottom) {
+                Text("TOTAL UNITS")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+                Text(total)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+            }
         }
     }
 
@@ -183,104 +199,10 @@ private extension ChartEntryDetailsView {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: rows, spacing: 0) {
                     ForEach(chartRun, id: \.0) { index, snapshot in
-                        VStack(spacing: 12) {
-                            switch snapshot {
-                            case .charted(let position):
-                                VStack {
-                                    Text("Week " + position.weekNumber)
-                                        .font(.subheadline)
-                                        .fontWeight(.bold)
-
-                                    Text(position.date)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(height: 32)
-
-                                HStack(spacing: 0) {
-                                    Rectangle()
-                                        .foregroundStyle(index == 0 ? .clear : .white)
-                                        .frame(height: 0.5)
-
-                                    Circle()
-                                        .frame(width: 8, height: 8)
-
-                                    Rectangle()
-                                        .foregroundStyle(index == chartRun.count - 1 ? .clear : .white)
-                                        .frame(height: 0.5)
-                                }
-                                .frame(height: 8)
-
-                                VStack {
-                                    VStack(spacing: 8) {
-                                        VStack {
-                                            Text("RANK")
-                                                .font(.caption)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(.secondary)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                                            Text(position.rank)
-                                                .font(.subheadline)
-                                                .fontWeight(.bold)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
-
-                                        VStack {
-                                            Text("UNITS")
-                                                .font(.caption)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(.secondary)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                                            Text(position.runningUnits)
-                                                .font(.subheadline)
-                                                .fontWeight(.bold)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                                            Text("(+\(position.units))")
-                                                .font(.caption)
-                                                .foregroundStyle(.green)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
-                                    }
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                }
-                                .frame(width: 132, height: 124)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color(uiColor: .separator), lineWidth: 0.8)
-                                )
-                                .padding(.horizontal, 8)
-                            case .outOfChart(let count):
-                                Spacer(minLength: 32)
-
-                                HStack(spacing: 0) {
-                                    Rectangle()
-                                        .foregroundStyle(.white)
-                                        .frame(height: 0.5)
-                                }
-                                .frame(height: 8)
-
-                                VStack {
-                                    Text(count)
-                                        .font(.subheadline)
-                                        .fontWeight(.bold)
-
-                                    Text("out of chart")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.red)
-                                }
-                                .padding()
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 24)
-                                        .stroke(Color(uiColor: .separator), lineWidth: 0.8)
-                                )
-                                .frame(height: 126)
-                                .padding(.horizontal, 8)
-                            }
-                        }
+                        ChartRunCell(
+                            snapshot: snapshot,
+                            firstCell: index == 0,
+                            lastCell: index == chartRun.count - 1)
                     }
                 }
             }
@@ -324,10 +246,118 @@ private extension ChartEntryDetailsView {
     }
 }
 
+private struct ChartRunCell: View {
+    let snapshot: ChartRunSnapshotUIModel
+    let firstCell: Bool
+    let lastCell: Bool
+
+    var body: some View {
+        VStack(spacing: 12) {
+            switch snapshot {
+            case .charted(let position):
+                VStack {
+                    Text("Week " + position.weekNumber)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+
+                    Text(position.date)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(height: 32)
+
+                HStack(spacing: 0) {
+                    Rectangle()
+                        .foregroundStyle(firstCell ? .clear : .white)
+                        .frame(height: 0.5)
+
+                    Circle()
+                        .frame(width: 8, height: 8)
+
+                    Rectangle()
+                        .foregroundStyle(lastCell ? .clear : .white)
+                        .frame(height: 0.5)
+                }
+                .frame(height: 8)
+
+                VStack {
+                    VStack(spacing: 8) {
+                        VStack {
+                            Text("RANK")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text(position.rank)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
+                        VStack {
+                            Text("UNITS")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text(position.runningUnits)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text("(+\(position.units))")
+                                .font(.caption)
+                                .foregroundStyle(.green)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                }
+                .frame(width: 132, height: 124)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color(uiColor: .separator), lineWidth: 0.8)
+                )
+                .padding(.horizontal, 8)
+            case .outOfChart(let count):
+                Spacer(minLength: 32)
+
+                HStack(spacing: 0) {
+                    Rectangle()
+                        .foregroundStyle(.white)
+                        .frame(height: 0.5)
+                }
+                .frame(height: 8)
+
+                VStack {
+                    Text(count)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+
+                    Text("out of chart")
+                        .font(.subheadline)
+                        .foregroundStyle(.red)
+                }
+                .padding()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24)
+                        .stroke(Color(uiColor: .separator), lineWidth: 0.8)
+                )
+                .frame(height: 126)
+                .padding(.horizontal, 8)
+            }
+        }
+    }
+}
+
 #Preview {
     final class MockViewModel: ChartEntryDetailsViewModelProtocol {
         func fetchAlbum(from entry: any ChartEntry) async throws {}
 
+        // swiftlint:disable function_body_length
         func generateDetails(of entry: any ChartEntry, year: Int?) -> ChartEntryDetailsUIModel {
             return ChartEntryDetailsUIModel(
                 id: "",
@@ -412,6 +442,7 @@ private extension ChartEntryDetailsView {
                 ],
                 parent: MockChartEntry())
         }
+        // swiftlint:enable function_body_length
     }
 
     return NavigationView {
@@ -425,3 +456,4 @@ private extension ChartEntryDetailsView {
             year: nil)
     }
 }
+// swiftlint:enable file_length

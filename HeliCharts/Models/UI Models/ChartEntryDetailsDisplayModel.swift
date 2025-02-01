@@ -65,9 +65,10 @@ struct ChartEntryDetailsUIModel {
                 return TrackChartRepository.getOverallHistory(of: track, year: year)
             } else if let album = entry as? AlbumEntry {
                 return AlbumChartRepository.getOverallHistory(of: album, year: year)
-            } else {
-                let artist = entry as! ArtistEntry
+            } else if let artist = entry as? ArtistEntry {
                 return ArtistChartRepository.getOverallHistory(of: artist, year: year)
+            } else {
+                fatalError("Use a known ChartEntry type")
             }
         }()
 
@@ -75,7 +76,7 @@ struct ChartEntryDetailsUIModel {
         self.sales = history.sales.toShortFormat()
         self.totalUnits = history.totalUnits.toDecimalFormat()
         self.weeks = String(history.weeksOnChart)
-        self.peak = "#\(history.peakRank) (\(history.weeksOnPeak)x)"
+        self.peak = "#\(history.peak) (\(history.weeksOnPeak)x)"
         self.certifications = history.certifications
         self.chartRun = history.chartRun.map { ChartRunSnapshotUIModel(snapshot: $0) }
 

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct WeekRange: Hashable {
     let from: Int
-    let to: Int
+    let to: Int // swiftlint:disable:this identifier_name
 }
 
 enum ChartType: CaseIterable, Hashable {
@@ -97,7 +97,8 @@ enum ChartMovement {
 }
 
 struct ChartOverallHistory {
-    let peakRank: Int
+    let parent: any ChartEntry
+    let peak: Int
     let weeksOnPeak: Int
     let weeksOnChart: Int
     let streams: Int
@@ -176,9 +177,10 @@ struct ChartEntryAggregate {
     let certifications: [Certification]?
 }
 
-struct ChartEntryUnits {
+struct ChartEntryUnits<ChartEntryType: ChartEntry> {
     let streams: Int
-    let streamsEquivalent: Int
     let sales: Int
+
+    var streamsEquivalent: Int { return streams * ChartEntryType.streamConversionRate }
     var total: Int { return streams + sales }
 }

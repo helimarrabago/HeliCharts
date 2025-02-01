@@ -9,14 +9,16 @@ import Combine
 import Foundation
 import OrderedCollections
 
+// swiftlint:disable file_length
 protocol ChartRepository<ChartKind> {
     associatedtype ChartKind: Chart
     typealias ChartEntryKind = ChartKind.Entry
 
     static var allCharts: CurrentValueSubject<[ChartKind], Never> { get set }
-    static var snapshotHistoryCache: [SnapshotHistoryKey<ChartEntryKind>: ChartSnapshotHistory] { get set }
-    static var overallHistoryCache: [OverallHistoryKey<ChartEntryKind>: ChartOverallHistory] { get set }
-    static var yearEndChartCache: [YearEndChartKey: [YearEndChartEntry]] { get set }
+    static var totalUnitsCache: [YearKey<ChartEntryKind>: ChartEntryUnits<ChartEntryKind>] { get set }
+    static var snapshotHistoryCache: [WeekKey<ChartEntryKind>: ChartSnapshotHistory] { get set }
+    static var overallHistoryCache: [YearKey<ChartEntryKind>: ChartOverallHistory] { get set }
+    static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] { get set }
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] { get set }
 }
 
@@ -31,9 +33,9 @@ extension ChartRepository {
     }
 
     static func getSnapshotHistory(of entry: ChartEntryKind) -> ChartSnapshotHistory {
-        let key = SnapshotHistoryKey(entry: entry, week: entry.week)
-        if let history = snapshotHistoryCache[key] {
-            return history
+        let key = WeekKey(entry: entry, week: entry.week)
+        if let cache = snapshotHistoryCache[key] {
+            return cache
         }
 
         let appearancesSoFar = getAppearancesSoFar(of: entry)
@@ -46,7 +48,7 @@ extension ChartRepository {
 
         let peakRank = getPeakRank(among: appearancesSoFar)
         let history = ChartSnapshotHistory(
-            movement: getMovement(of: entry, from: appearancesSoFar),
+            movement: getMovement(of: entry, from: appearancesSoFar[1]),
             peakRank: peakRank,
             weeksOnPeak: getWeeks(onPeak: peakRank, among: appearancesSoFar),
             weeksOnChart: appearancesSoFar.count)
@@ -56,9 +58,9 @@ extension ChartRepository {
     }
 
     static func getOverallHistory(of entry: ChartEntryKind, year: Int?) -> ChartOverallHistory {
-        let key = OverallHistoryKey(entry: entry, year: year)
-        if let history = overallHistoryCache[key] {
-            return history
+        let key = YearKey(entry: entry, year: year)
+        if let cache = overallHistoryCache[key] {
+            return cache
         }
 
         let allAppearances = getAllAppearances(of: entry, year: year)
@@ -76,7 +78,8 @@ extension ChartRepository {
                 weekNumber: getWeekNumber(of: entry.week))
 
             let history = ChartOverallHistory(
-                peakRank: entry.rank,
+                parent: entry,
+                peak: entry.rank,
                 weeksOnPeak: 1,
                 weeksOnChart: 1,
                 streams: units.streamsEquivalent,
@@ -91,11 +94,12 @@ extension ChartRepository {
         }
 
         let peakRank = getPeakRank(among: allAppearances)
-        let units = getTotalUnits(among: allAppearances)
+        let units = computeTotalUnits(among: allAppearances, year: nil)
         let certifications = getCertifications(for: entry, totalUnits: units.total)
 
         let history = ChartOverallHistory(
-            peakRank: peakRank,
+            parent: entry,
+            peak: peakRank,
             weeksOnPeak: getWeeks(onPeak: peakRank, among: allAppearances),
             weeksOnChart: allAppearances.count,
             streams: units.streamsEquivalent,
@@ -134,12 +138,14 @@ private extension ChartRepository {
             return [entry]
         }
 
-        let allAppearances = charts.compactMap { $0.getSameEntry(as: entry) }
-        return allAppearances
+        let allAppearances = charts.compactMap { $0.getSameEntry(as: entry) }.reversed()
+        return Array(allAppearances)
     }
 
-    static func getMovement(of entry: ChartEntryKind, from appearancesSoFar: [ChartEntryKind]) -> ChartMovement {
-        let previousAppearance = appearancesSoFar[1]
+    static func getMovement(
+        of entry: ChartEntryKind,
+        from previousAppearance: ChartEntryKind
+    ) -> ChartMovement {
         guard previousAppearance.week.isImmediatelyBefore(week: entry.week) else {
             return .reappear // Re-appeared
         }
@@ -166,15 +172,60 @@ private extension ChartRepository {
         return weeksOnPeak
     }
 
-    static func getTotalUnits(among appearances: [ChartEntryKind]) -> ChartEntryUnits {
-        let totalUnits = appearances.enumerated()
-            .map { $1.computeUnits(weeks: $0 + 1) }
-            .reduce(into: ChartEntryUnits(streams: 0, streamsEquivalent: 0, sales: 0)) { partialUnits, units in
-                partialUnits = ChartEntryUnits(
-                    streams: partialUnits.streams + units.streams,
-                    streamsEquivalent: partialUnits.streamsEquivalent + units.streamsEquivalent,
-                    sales: partialUnits.sales + units.sales)
+    static func computeTotalUnits(
+        among appearances: [ChartEntryKind],
+        year: Int?
+    ) -> ChartEntryUnits<ChartEntryKind> {
+        let key = YearKey(entry: appearances[0], year: year)
+        if let cache = totalUnitsCache[key] {
+            return cache
+        }
+
+        let minChartUnits = ChartEntryKind.computeUnits(rank: 100, playCount: 1, weeks: 1)
+        let maxAllowedStreams = Double(minChartUnits.streams) * 0.3
+        let maxAllowedSales = Double(minChartUnits.sales) * 0.3
+
+        var previousWeekNumber: Int?; var previousUnits: ChartEntryUnits<ChartEntryKind>?
+        var totalUnits = ChartEntryUnits<ChartEntryKind>(streams: 0, sales: 0)
+
+        for (index, appearance) in appearances.enumerated() {
+            let currentWeekNumber = getWeekNumber(of: appearance.week)
+            let weeks = index + 1
+
+            if let previousWeekNumber, let previousUnits {
+                let weeksOffChart = currentWeekNumber - previousWeekNumber - 1
+                if weeksOffChart > 0 {
+                    for week in 1...weeksOffChart {
+                        let weeklyDecay = pow(0.7, Double(week - 1))
+                        let longevityBonus = ChartEntryKind.computeLongevityBonus(weeks: weeks + week)
+
+                        var offChartStreams = Double(previousUnits.streams) * weeklyDecay
+                        offChartStreams = min(offChartStreams, maxAllowedStreams)
+                        offChartStreams = max(offChartStreams, 4_000)
+                        offChartStreams *= longevityBonus
+
+                        var offChartSales = Double(previousUnits.sales) * weeklyDecay
+                        offChartSales = min(offChartSales, maxAllowedSales)
+                        offChartSales = max(offChartSales, 2_000)
+                        offChartSales *= longevityBonus
+
+                        totalUnits = ChartEntryUnits(
+                            streams: totalUnits.streams + Int(offChartStreams),
+                            sales: totalUnits.sales + Int(offChartSales))
+                    }
+                }
             }
+
+            let units = appearance.computeUnits(weeks: weeks)
+            previousUnits = units
+            previousWeekNumber = currentWeekNumber
+
+            totalUnits = ChartEntryUnits(
+                streams: totalUnits.streams + units.streams,
+                sales: totalUnits.sales + units.sales)
+        }
+
+        totalUnitsCache[key] = totalUnits
         return totalUnits
     }
 
@@ -306,7 +357,25 @@ private extension ChartRepository {
 
         var rankedChildEntries: OrderedDictionary<ChartType, [ChildChartEntry]> = [:]
         for (chartType, entries) in childEntries {
-            let aggregates = aggregateEntries(entries, by: .totalUnits)
+            let aggregates: [ChartEntryAggregate]
+            switch chartType {
+            case .track:
+                guard let tracks = entries as? [TrackEntry] else {
+                    fatalError("Specify tracks for track chart type.")
+                }
+                aggregates = aggregateEntries(tracks, by: .totalUnits, year: year, limit: nil)
+            case .album:
+                guard let albums = entries as? [AlbumEntry] else {
+                    fatalError("Specify albums for album chart type.")
+                }
+                aggregates = aggregateEntries(albums, by: .totalUnits, year: year, limit: nil)
+            case .artist:
+                guard let artists = entries as? [ArtistEntry] else {
+                    fatalError("Specify artists for artist chart type.")
+                }
+                aggregates = aggregateEntries(artists, by: .totalUnits, year: year, limit: nil)
+            }
+
             rankedChildEntries[chartType] = aggregates.map { aggregate in
                 return ChildChartEntry(
                     id: aggregate.parent.id,
@@ -322,7 +391,7 @@ private extension ChartRepository {
 // MARK: - Overall Methods
 extension ChartRepository {
     static func generateYearEndChart(for year: Int, metric: ChartMetric) -> [YearEndChartEntry] {
-        let key = YearEndChartKey(year: year, metric: metric)
+        let key = YearAndMetricKey(year: year, metric: metric)
         if let chart = yearEndChartCache[key] {
             return chart
         }
@@ -331,7 +400,7 @@ extension ChartRepository {
         guard !entries.isEmpty else { return [] }
 
         let lastYearEndChart = generateYearEndChart(for: year - 1, metric: metric)
-        let aggregates = aggregateEntries(entries, by: metric, count: 100)
+        let aggregates = aggregateEntries(entries, by: metric, year: year, limit: 100)
         let topEntries = aggregates.map { aggregate in
             let lastYearEntry = lastYearEndChart.first { $0.id == aggregate.parent.id }
             let movement: ChartMovement = {
@@ -365,7 +434,7 @@ extension ChartRepository {
         }
 
         let entries = allCharts.value.flatMap { $0.entries }
-        let aggregates = aggregateEntries(entries, by: metric, count: 100)
+        let aggregates = aggregateEntries(entries, by: metric, year: nil, limit: 100)
         let topEntries = aggregates.map { aggregate in
             return AllTimeChartEntry(
                 id: aggregate.parent.id,
@@ -385,19 +454,20 @@ private extension ChartRepository {
         return yearlyCharts
     }
 
-    static func aggregateEntries(
-        _ entries: [any ChartEntry],
+    // swiftlint:disable function_body_length
+    static func aggregateEntries<ChartEntryType: ChartEntry>(
+        _ entries: [ChartEntryType],
         by metric: ChartMetric,
-        count: Int? = nil
+        year: Int?,
+        limit: Int?
     ) -> [ChartEntryAggregate] {
-        var rawAggregates: [String: ChartEntryAggregate] = [:]
+        var snapshotAggregates: [String: ChartEntryAggregateSnapshot<ChartEntryType>] = [:]
 
-        for entry in entries {
+        for entry in entries.reversed() {
             let id = entry.id
 
-            if let existing = rawAggregates[id] {
+            if let existing = snapshotAggregates[id] {
                 let weeksOnChart = existing.weeksOnChart + 1
-                let units = entry.computeUnits(weeks: weeksOnChart)
 
                 var peak = existing.peak
                 var weeksOnPeak = existing.weeksOnPeak
@@ -408,78 +478,71 @@ private extension ChartRepository {
                     weeksOnPeak += 1
                 }
 
-                rawAggregates[id] = ChartEntryAggregate(
+                snapshotAggregates[id] = ChartEntryAggregateSnapshot(
                     parent: existing.parent,
                     rank: 0,
                     peak: peak,
                     weeksOnPeak: weeksOnPeak,
                     weeksOnChart: weeksOnChart,
-                    streams: existing.streams + units.streamsEquivalent,
-                    sales: existing.sales + units.sales,
-                    totalUnits: existing.totalUnits + units.total,
-                    certifications: nil)
+                    appearances: existing.appearances + [entry])
             } else {
-                let units = entry.computeUnits(weeks: 1)
-                rawAggregates[id] = ChartEntryAggregate(
+                snapshotAggregates[id] = ChartEntryAggregateSnapshot(
                     parent: entry,
                     rank: 0,
                     peak: entry.rank,
                     weeksOnPeak: 1,
                     weeksOnChart: 1,
-                    streams: units.streamsEquivalent,
-                    sales: units.sales,
-                    totalUnits: units.total,
-                    certifications: nil)
+                    appearances: [entry])
             }
         }
 
-        func sortAggregates() -> [Dictionary<String, ChartEntryAggregate>.Element] {
-            return rawAggregates.sorted { lhs, rhs in
-                let lhs = lhs.value; let rhs = rhs.value
+        let rawAggregates = snapshotAggregates.mapValues { snapshot in
+            let appearances = snapshot.appearances
 
-                let sortByTotalUnits: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
-                    guard lhs.totalUnits != rhs.totalUnits else { return nil }
-                    return lhs.totalUnits > rhs.totalUnits
-                }
+            let streams: Int
+            let sales: Int
+            let totalUnits: Int
 
-                let sortByStreams: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
-                    guard lhs.streams != rhs.streams else { return nil }
-                    return lhs.streams > rhs.streams
-                }
-
-                let sortBySales: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
-                    guard lhs.sales != rhs.sales else { return nil }
-                    return lhs.sales > rhs.sales
-                }
-
-                switch metric {
-                case .streams:
-                    return sortByStreams(lhs, rhs) ??
-                           sortByTotalUnits(lhs, rhs) ??
-                           sortBySales(lhs, rhs) ??
-                           (lhs.parent.name < rhs.parent.name)
-                case .sales:
-                    return sortBySales(lhs, rhs) ??
-                           sortByTotalUnits(lhs, rhs) ??
-                           sortBySales(lhs, rhs) ??
-                           (lhs.parent.name < rhs.parent.name)
-                case .totalUnits:
-                    return sortByTotalUnits(lhs, rhs) ??
-                           sortBySales(lhs, rhs) ??
-                           sortByStreams(lhs, rhs) ??
-                           (lhs.parent.name < rhs.parent.name)
-                }
+            if let tracks = appearances as? [TrackEntry] {
+                let units = TrackChartRepository.computeTotalUnits(among: tracks, year: year)
+                streams = units.streamsEquivalent
+                sales = units.sales
+                totalUnits = units.total
+            } else if let albums = appearances as? [AlbumEntry] {
+                let units = AlbumChartRepository.computeTotalUnits(among: albums, year: year)
+                streams = units.streamsEquivalent
+                sales = units.sales
+                totalUnits = units.total
+            } else if let artists = appearances as? [ArtistEntry] {
+                let units = ArtistChartRepository.computeTotalUnits(among: artists, year: year)
+                streams = units.streamsEquivalent
+                sales = units.sales
+                totalUnits = units.total
+            } else {
+                fatalError("Use a known ChartEntry type.")
             }
+
+            let certifications = getCertifications(for: snapshot.parent, totalUnits: totalUnits)
+
+            return ChartEntryAggregate(
+                parent: snapshot.parent,
+                rank: 0,
+                peak: snapshot.peak,
+                weeksOnPeak: snapshot.weeksOnPeak,
+                weeksOnChart: snapshot.weeksOnChart,
+                streams: streams,
+                sales: sales,
+                totalUnits: totalUnits,
+                certifications: certifications)
         }
 
-        var sortedAggregates = sortAggregates()
-        if let count = count {
-            sortedAggregates = Array(sortedAggregates.prefix(count))
+        var sortedAggregates = sortAggregates(rawAggregates, metric: metric)
+        if let limit = limit {
+            sortedAggregates = Array(sortedAggregates.prefix(limit))
         }
 
         let aggregates = sortedAggregates.enumerated().map { index, element in
             let aggregate = element.value
-            let certifications = getCertifications(for: aggregate.parent, totalUnits: aggregate.totalUnits)
             return ChartEntryAggregate(
                 parent: aggregate.parent,
                 rank: index + 1,
@@ -489,24 +552,78 @@ private extension ChartRepository {
                 streams: aggregate.streams,
                 sales: aggregate.sales,
                 totalUnits: aggregate.totalUnits,
-                certifications: certifications)
+                certifications: aggregate.certifications)
         }
 
         return aggregates
     }
+    // swiftlint:enable function_body_length
+
+    static func sortAggregates(
+        _ rawAggregates: [String: ChartEntryAggregate],
+        metric: ChartMetric
+    ) -> [Dictionary<String, ChartEntryAggregate>.Element] {
+        return rawAggregates.sorted { lhs, rhs in
+            let lhs = lhs.value; let rhs = rhs.value
+
+            let sortByTotalUnits: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
+                guard lhs.totalUnits != rhs.totalUnits else { return nil }
+                return lhs.totalUnits > rhs.totalUnits
+            }
+
+            let sortByStreams: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
+                guard lhs.streams != rhs.streams else { return nil }
+                return lhs.streams > rhs.streams
+            }
+
+            let sortBySales: (ChartEntryAggregate, ChartEntryAggregate) -> Bool? = { lhs, rhs in
+                guard lhs.sales != rhs.sales else { return nil }
+                return lhs.sales > rhs.sales
+            }
+
+            switch metric {
+            case .streams:
+                return sortByStreams(lhs, rhs) ??
+                       sortByTotalUnits(lhs, rhs) ??
+                       sortBySales(lhs, rhs) ??
+                       (lhs.parent.name < rhs.parent.name)
+            case .sales:
+                return sortBySales(lhs, rhs) ??
+                       sortByTotalUnits(lhs, rhs) ??
+                       sortBySales(lhs, rhs) ??
+                       (lhs.parent.name < rhs.parent.name)
+            case .totalUnits:
+                return sortByTotalUnits(lhs, rhs) ??
+                       sortBySales(lhs, rhs) ??
+                       sortByStreams(lhs, rhs) ??
+                       (lhs.parent.name < rhs.parent.name)
+            }
+        }
+    }
+
 }
 
-struct SnapshotHistoryKey<Entry: ChartEntry>: Hashable{
-    let entry: Entry
+private struct ChartEntryAggregateSnapshot<ChartEntryType: ChartEntry> {
+    let parent: ChartEntryType
+    let rank: Int
+    let peak: Int
+    let weeksOnPeak: Int
+    let weeksOnChart: Int
+    let appearances: [ChartEntryType]
+}
+
+struct WeekKey<ChartEntryType: ChartEntry>: Hashable {
+    let entry: ChartEntryType
     let week: WeekRange
 }
 
-struct OverallHistoryKey<Entry: ChartEntry>: Hashable {
-    let entry: Entry
+struct YearKey<ChartEntryType: ChartEntry>: Hashable {
+    let entry: ChartEntryType
     let year: Int?
 }
 
-struct YearEndChartKey: Hashable {
+struct YearAndMetricKey: Hashable {
     let year: Int
     let metric: ChartMetric
 }
+// swiftlint:enable file_length

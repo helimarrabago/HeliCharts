@@ -482,6 +482,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BA67D1D22D4DF81E00642984 /* PBXTargetDependency */,
 			);
 			name = RalphCharts;
 			packageProductDependencies = (
@@ -506,6 +507,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BA67D1D42D4DF82000642984 /* PBXTargetDependency */,
 			);
 			name = CLCharts;
 			packageProductDependencies = (
@@ -530,6 +532,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BA67D1D02D4DF81900642984 /* PBXTargetDependency */,
 			);
 			name = HeliCharts;
 			packageProductDependencies = (
@@ -569,6 +572,7 @@
 			mainGroup = BA9398F02D2D604500362719;
 			packageReferences = (
 				BAFC4E652D3C890F00BC5B73 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				BA67D1CE2D4DF80C00642984 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = BA9398FA2D2D604500362719 /* Products */;
 			projectDirPath = "";
@@ -799,6 +803,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BA67D1D02D4DF81900642984 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = BA67D1CF2D4DF81900642984 /* SwiftLintBuildToolPlugin */;
+		};
+		BA67D1D22D4DF81E00642984 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = BA67D1D12D4DF81E00642984 /* SwiftLintBuildToolPlugin */;
+		};
+		BA67D1D42D4DF82000642984 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = BA67D1D32D4DF82000642984 /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BA5F02C22D40EA8B008AF417 /* Debug */ = {
@@ -1194,6 +1213,14 @@
 				version = 1.1.4;
 			};
 		};
+		BA67D1CE2D4DF80C00642984 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = exactVersion;
+				version = 0.58.2;
+			};
+		};
 		BAFC4E652D3C890F00BC5B73 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections.git";
@@ -1254,6 +1281,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BA5F02C72D40EADD008AF417 /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = HeapModule;
+		};
+		BA67D1CF2D4DF81900642984 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA67D1CE2D4DF80C00642984 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		BA67D1D12D4DF81E00642984 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA67D1CE2D4DF80C00642984 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		BA67D1D32D4DF82000642984 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA67D1CE2D4DF80C00642984 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 		BAFC4E662D3C890F00BC5B73 /* BitCollections */ = {
 			isa = XCSwiftPackageProductDependency;

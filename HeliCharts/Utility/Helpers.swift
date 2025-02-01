@@ -40,6 +40,7 @@ enum DateHelper {
                 }
 
                 let from = Int(weekStart.timeIntervalSince1970)
+                // swiftlint:disable:next identifier_name
                 let to = Int(weekEndFinalSecond.timeIntervalSince1970)
                 weekRanges.append(WeekRange(from: from, to: to))
             }

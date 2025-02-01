@@ -54,9 +54,10 @@ struct ChartEntryUIModel: Identifiable {
                 return TrackChartRepository.getSnapshotHistory(of: track)
             } else if let album = entry as? AlbumEntry {
                 return AlbumChartRepository.getSnapshotHistory(of: album)
-            } else {
-                let artist = entry as! ArtistEntry
+            } else if let artist = entry as? ArtistEntry {
                 return ArtistChartRepository.getSnapshotHistory(of: artist)
+            } else {
+                fatalError("Use a known ChartEntry type.")
             }
         }()
 

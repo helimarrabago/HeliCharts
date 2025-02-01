@@ -51,13 +51,14 @@ struct TopChartEntryUIModel: Identifiable {
             self.title = [topEntry.artist?.name, topEntry.name].compactMap { $0 }.joined(separator: " - ")
 
             let weeks: Int
-            switch type {
-            case .track:
-                weeks = TrackChartRepository.getAppearancesSoFar(of: topEntry as! TrackEntry).count
-            case .album:
-                weeks = AlbumChartRepository.getAppearancesSoFar(of: topEntry as! AlbumEntry).count
-            case .artist:
-                weeks = ArtistChartRepository.getAppearancesSoFar(of: topEntry as! ArtistEntry).count
+            if let track = topEntry as? TrackEntry {
+                weeks = TrackChartRepository.getAppearancesSoFar(of: track).count
+            } else if let album = topEntry as? AlbumEntry {
+                weeks = AlbumChartRepository.getAppearancesSoFar(of: album).count
+            } else if let artist = topEntry as? ArtistEntry {
+                weeks = ArtistChartRepository.getAppearancesSoFar(of: artist).count
+            } else {
+                fatalError("Use a known ChartEntry type.")
             }
 
             let units = topEntry.computeUnits(weeks: weeks)

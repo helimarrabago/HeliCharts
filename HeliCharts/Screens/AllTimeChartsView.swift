@@ -135,7 +135,7 @@ private extension AllTimeChartsView {
                 certifications: [.diamond(count: 1), .platinum(count: 2)],
                 parent: MockChartEntry())]
         }
-        
+
         func generateAllTimeAlbumChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",
@@ -149,7 +149,7 @@ private extension AllTimeChartsView {
                 certifications: [.diamond(count: 1), .platinum(count: 2)],
                 parent: MockChartEntry())]
         }
-        
+
         func generateAllTimeArtistChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",

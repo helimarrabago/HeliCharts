@@ -107,12 +107,12 @@ private extension TopChartEntriesView {
                         HStack {
                             Text("Week \(chart.weekNumber)")
                                 .font(.headline)
-                            
+
                             Text(chart.week)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        
+
                         if let title = chart.title {
                             Text(chart.type.emoji + " " + title)
                                 .font(.headline)

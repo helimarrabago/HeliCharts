@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 struct UserResponse: Decodable {
     let user: User
 
@@ -24,3 +25,4 @@ struct UserResponse: Decodable {
         }
     }
 }
+// swiftlint:enable nesting
