@@ -47,6 +47,7 @@ struct ChartEntryUIModel: Identifiable {
         self.id = entry.id
         self.rank = String(entry.rank)
         self.title = [entry.artist?.name, entry.name].compactMap { $0 }.joined(separator: " - ")
+        self.parent = entry
 
         let history = {
             if let track = entry as? TrackEntry {
@@ -62,10 +63,10 @@ struct ChartEntryUIModel: Identifiable {
         self.movement = ChartMovementUIModel(movement: history.movement)
         self.peak = "#\(history.peakRank) (\(history.weeksOnPeak)x)"
         self.weeks = String(history.weeksOnChart)
-        let (streams, sales, units) = entry.computeUnits(weeks: history.weeksOnChart)
-        self.streams = streams.toDecimalFormat()
-        self.sales = sales.toDecimalFormat()
-        self.units = units.toDecimalFormat()
-        self.parent = entry
+
+        let units = entry.computeUnits(weeks: history.weeksOnChart)
+        self.streams = units.streamsEquivalent.toDecimalFormat()
+        self.sales = units.sales.toDecimalFormat()
+        self.units = units.total.toDecimalFormat()
     }
 }

@@ -15,7 +15,7 @@ protocol ChartEntry: Hashable {
     var rank: Int { get }
     var week: WeekRange { get }
 
-    func computeUnits(weeks: Int) -> (streams: Int, sales: Int, units: Int)
+    func computeUnits(weeks: Int) -> ChartEntryUnits
 }
 
 extension ChartEntry {
@@ -32,8 +32,8 @@ struct MockChartEntry: ChartEntry {
     let rank: Int = 0
     let week: WeekRange = WeekRange(from: 1708012800, to: 1708531200)
 
-    func computeUnits(weeks: Int) -> (streams: Int, sales: Int, units: Int) {
-        return (0, 0, 0)
+    func computeUnits(weeks: Int) -> ChartEntryUnits {
+        return ChartEntryUnits(streams: 0, streamsEquivalent: 0, sales: 0)
     }
 
     static func == (lhs: MockChartEntry, rhs: MockChartEntry) -> Bool {

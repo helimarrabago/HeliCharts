@@ -66,12 +66,12 @@ extension ChartRepository {
 
         guard allAppearances.count > 1 else {
             // Newly charted
-            let (streams, sales, units) = entry.computeUnits(weeks: 1)
-            let certifications = getCertifications(for: entry, totalUnits: units)
+            let units = entry.computeUnits(weeks: 1)
+            let certifications = getCertifications(for: entry, totalUnits: units.total)
             let position = ChartPosition(
                 rank: entry.rank,
-                units: units,
-                runningUnits: units,
+                units: units.total,
+                runningUnits: units.total,
                 date: Date(timeIntervalSince1970: TimeInterval(entry.week.from)),
                 weekNumber: getWeekNumber(of: entry.week))
 
@@ -79,9 +79,9 @@ extension ChartRepository {
                 peakRank: entry.rank,
                 weeksOnPeak: 1,
                 weeksOnChart: 1,
-                streams: streams,
-                sales: sales,
-                totalUnits: units,
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
                 certifications: certifications,
                 chartRun: [.charted(position: position)],
                 childEntries: childEntries)
@@ -91,16 +91,16 @@ extension ChartRepository {
         }
 
         let peakRank = getPeakRank(among: allAppearances)
-        let (streams, sales, totalUnits) = getTotalUnits(among: allAppearances)
-        let certifications = getCertifications(for: entry, totalUnits: totalUnits)
+        let units = getTotalUnits(among: allAppearances)
+        let certifications = getCertifications(for: entry, totalUnits: units.total)
 
         let history = ChartOverallHistory(
             peakRank: peakRank,
             weeksOnPeak: getWeeks(onPeak: peakRank, among: allAppearances),
             weeksOnChart: allAppearances.count,
-            streams: streams,
-            sales: sales,
-            totalUnits: totalUnits,
+            streams: units.streamsEquivalent,
+            sales: units.sales,
+            totalUnits: units.total,
             certifications: certifications,
             chartRun: getChartRun(of: entry, year: year),
             childEntries: childEntries)
@@ -166,14 +166,14 @@ private extension ChartRepository {
         return weeksOnPeak
     }
 
-    static func getTotalUnits(among appearances: [ChartEntryKind]) -> (streams: Int, sales: Int, units: Int) {
+    static func getTotalUnits(among appearances: [ChartEntryKind]) -> ChartEntryUnits {
         let totalUnits = appearances.enumerated()
             .map { $1.computeUnits(weeks: $0 + 1) }
-            .reduce(into: (streams: 0, sales: 0, units: 0)) { partialUnits, units in
-                partialUnits = (
-                    partialUnits.streams + units.streams,
-                    partialUnits.sales + units.sales,
-                    partialUnits.units + units.units)
+            .reduce(into: ChartEntryUnits(streams: 0, streamsEquivalent: 0, sales: 0)) { partialUnits, units in
+                partialUnits = ChartEntryUnits(
+                    streams: partialUnits.streams + units.streams,
+                    streamsEquivalent: partialUnits.streamsEquivalent + units.streamsEquivalent,
+                    sales: partialUnits.sales + units.sales)
             }
         return totalUnits
     }
@@ -247,7 +247,7 @@ private extension ChartRepository {
                     outOfChartCount = 0
                 }
 
-                let units = entry.computeUnits(weeks: weeks).units
+                let units = entry.computeUnits(weeks: weeks).total
                 runningUnits += units
                 let position = ChartPosition(
                     rank: entry.rank,
@@ -397,7 +397,7 @@ private extension ChartRepository {
 
             if let existing = rawAggregates[id] {
                 let weeksOnChart = existing.weeksOnChart + 1
-                let (streams, sales, units) = entry.computeUnits(weeks: weeksOnChart)
+                let units = entry.computeUnits(weeks: weeksOnChart)
 
                 var peak = existing.peak
                 var weeksOnPeak = existing.weeksOnPeak
@@ -414,21 +414,21 @@ private extension ChartRepository {
                     peak: peak,
                     weeksOnPeak: weeksOnPeak,
                     weeksOnChart: weeksOnChart,
-                    streams: existing.streams + streams,
-                    sales: existing.sales + sales,
-                    totalUnits: existing.totalUnits + units,
+                    streams: existing.streams + units.streamsEquivalent,
+                    sales: existing.sales + units.sales,
+                    totalUnits: existing.totalUnits + units.total,
                     certifications: nil)
             } else {
-                let (streams, sales, units) = entry.computeUnits(weeks: 1)
+                let units = entry.computeUnits(weeks: 1)
                 rawAggregates[id] = ChartEntryAggregate(
                     parent: entry,
                     rank: 0,
                     peak: entry.rank,
                     weeksOnPeak: 1,
                     weeksOnChart: 1,
-                    streams: streams,
-                    sales: sales,
-                    totalUnits: units,
+                    streams: units.streamsEquivalent,
+                    sales: units.sales,
+                    totalUnits: units.total,
                     certifications: nil)
             }
         }

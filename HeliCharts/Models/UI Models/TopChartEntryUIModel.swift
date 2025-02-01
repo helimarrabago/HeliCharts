@@ -60,10 +60,10 @@ struct TopChartEntryUIModel: Identifiable {
                 weeks = ArtistChartRepository.getAppearancesSoFar(of: topEntry as! ArtistEntry).count
             }
 
-            let (streams, sales, units) = topEntry.computeUnits(weeks: weeks)
-            self.streams = streams.toDecimalFormat()
-            self.sales = sales.toDecimalFormat()
-            self.units = units.toDecimalFormat()
+            let units = topEntry.computeUnits(weeks: weeks)
+            self.streams = units.streamsEquivalent.toDecimalFormat()
+            self.sales = units.sales.toDecimalFormat()
+            self.units = units.total.toDecimalFormat()
         } else {
             self.title = nil
             self.streams = nil

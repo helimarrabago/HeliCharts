@@ -62,4 +62,4 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # Credentials
-HeliCharts/Credentials.swift
+HeliCharts/Utility/Credentials.swift

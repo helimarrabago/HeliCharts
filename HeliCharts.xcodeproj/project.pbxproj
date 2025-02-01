@@ -323,6 +323,31 @@
 			path = Responses;
 			sourceTree = "<group>";
 		};
+		BA67D1CC2D4DD93100642984 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				BA9398FE2D2D604500362719 /* IndexView.swift */,
+				BA76E4392D35466800D03DFA /* TopChartEntriesView.swift */,
+				BA1707E22D2FE5410036292F /* ChartView.swift */,
+				BAEE206F2D32629E00551EA7 /* ChartEntryDetailsView.swift */,
+				BAFC4E702D3C89F200BC5B73 /* ChartEntryChildEntriesView.swift */,
+				BA76E4402D3558E400D03DFA /* YearEndChartsView.swift */,
+				BA5BA98C2D3FCE2E002859BD /* AllTimeChartsView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		BA67D1CD2D4DD94E00642984 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				BADAF42C2D2E83A2002B2ECC /* LastFM.swift */,
+				BA93990E2D2E1F7400362719 /* Helpers.swift */,
+				BAEE206D2D325FEC00551EA7 /* Settings.swift */,
+				BA67D1C82D4DD62900642984 /* Credentials.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
 		BA9398F02D2D604500362719 = {
 			isa = PBXGroup;
 			children = (
@@ -345,20 +370,11 @@
 			isa = PBXGroup;
 			children = (
 				BA9398FC2D2D604500362719 /* HeliChartsApp.swift */,
-				BA9398FE2D2D604500362719 /* IndexView.swift */,
-				BA76E4392D35466800D03DFA /* TopChartEntriesView.swift */,
-				BA1707E22D2FE5410036292F /* ChartView.swift */,
-				BAEE206F2D32629E00551EA7 /* ChartEntryDetailsView.swift */,
-				BAFC4E702D3C89F200BC5B73 /* ChartEntryChildEntriesView.swift */,
-				BA76E4402D3558E400D03DFA /* YearEndChartsView.swift */,
-				BA5BA98C2D3FCE2E002859BD /* AllTimeChartsView.swift */,
+				BA67D1CC2D4DD93100642984 /* Screens */,
 				BAA0AD3C2D410350004BB4BE /* Reusable Views */,
 				BA1707E42D2FE54B0036292F /* View Models */,
 				BA9399102D2E1FCC00362719 /* Models */,
-				BADAF42C2D2E83A2002B2ECC /* LastFM.swift */,
-				BA93990E2D2E1F7400362719 /* Helpers.swift */,
-				BAEE206D2D325FEC00551EA7 /* Settings.swift */,
-				BA67D1C82D4DD62900642984 /* Credentials.swift */,
+				BA67D1CD2D4DD94E00642984 /* Utility */,
 				BA9399022D2D604700362719 /* Assets.xcassets */,
 				BA9399042D2D604700362719 /* Preview Content */,
 			);

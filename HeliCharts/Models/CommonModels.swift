@@ -178,6 +178,7 @@ struct ChartEntryAggregate {
 
 struct ChartEntryUnits {
     let streams: Int
+    let streamsEquivalent: Int
     let sales: Int
     var total: Int { return streams + sales }
 }
