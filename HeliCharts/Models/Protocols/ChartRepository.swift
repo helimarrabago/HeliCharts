@@ -188,8 +188,8 @@ private extension ChartRepository {
                         weeksOnChart: weeksOnChart,
                         lastUnits: lastUnits)
                     totalUnits = ChartEntryUnits(
-                        streams: totalUnits.streams + units.streams,
-                        sales: totalUnits.sales + units.sales)
+                        streams: totalUnits.rawStreams + units.rawStreams,
+                        sales: totalUnits.rawSales + units.rawSales)
                 }
             }
 
@@ -198,8 +198,8 @@ private extension ChartRepository {
             lastWeekNumber = currentWeekNumber
 
             totalUnits = ChartEntryUnits(
-                streams: totalUnits.streams + units.streams,
-                sales: totalUnits.sales + units.sales)
+                streams: totalUnits.rawStreams + units.rawStreams,
+                sales: totalUnits.rawSales + units.rawSales)
         }
 
         totalUnitsCache[key] = totalUnits
@@ -232,8 +232,8 @@ private extension ChartRepository {
             offChartSales *= longevityBonus
 
             units = ChartEntryUnits(
-                streams: units.streams + Int(offChartStreams),
-                sales: units.sales + Int(offChartSales))
+                streams: units.rawStreams + offChartStreams,
+                sales: units.rawSales + offChartSales)
         }
 
         return units

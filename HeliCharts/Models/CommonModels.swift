@@ -178,9 +178,16 @@ struct ChartEntryAggregate {
 }
 
 struct ChartEntryUnits<ChartEntryType: ChartEntry> {
-    let streams: Int
-    let sales: Int
+    let rawStreams: Double
+    let rawSales: Double
 
-    var streamsEquivalent: Int { return streams * ChartEntryType.streamConversionRate }
-    var total: Int { return streams + sales }
+    init(streams: Double, sales: Double) {
+        self.rawStreams = streams
+        self.rawSales = sales
+    }
+
+    var streams: Int { return Int(rawStreams) }
+    var sales: Int { return Int(rawSales) }
+    var streamsEquivalent: Int { return Int(rawStreams * Double(ChartEntryType.streamConversionRate)) }
+    var total: Int { return Int(rawStreams + rawSales) }
 }

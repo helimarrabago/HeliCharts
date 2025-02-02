@@ -31,7 +31,7 @@ extension ChartEntry {
     }
 
     static func computeLongevityBonus(weeks: Int) -> Double {
-        return 1 + 0.01 * log(Double(weeks) + 1)
+        return 1 + 0.05 * log(Double(weeks) + 1)
     }
 }
 

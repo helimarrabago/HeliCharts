@@ -75,6 +75,6 @@ extension ArtistEntry {
         sales += pow(playCount, 1.2) * 3_000
         sales *= longevityBonus
 
-        return ChartEntryUnits(streams: Int(streams), sales: Int(sales))
+        return ChartEntryUnits(streams: streams, sales: sales)
     }
 }
