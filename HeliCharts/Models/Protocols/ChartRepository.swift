@@ -279,16 +279,12 @@ private extension ChartRepository {
         guard
             let firstAppearance = allAppearances.firstIndex(where: { chart in
                 let hasSameEntry = chart.getSameEntry(as: entry) != nil
-                if let year = year {
-                    return hasSameEntry && chart.week.isInYear(year)
-                }
+                if let year = year { return hasSameEntry && chart.week.isInYear(year) }
                 return hasSameEntry
             }),
             let lastAppearance = allAppearances.lastIndex(where: { chart in
                 let hasSameEntry = chart.getSameEntry(as: entry) != nil
-                if let year = year {
-                    return hasSameEntry && chart.week.isInYear(year)
-                }
+                if let year = year { return hasSameEntry && chart.week.isInYear(year) }
                 return hasSameEntry
             })
         else {
@@ -372,7 +368,15 @@ private extension ChartRepository {
             return nil
         }
 
-        var rankedChildEntries: OrderedDictionary<ChartKind, [ChildChartEntry]> = [:]
+        let sortedChildEntries = sortChildEntries(childEntries, year: year)
+        return sortedChildEntries
+    }
+
+    static func sortChildEntries(
+        _ childEntries: OrderedDictionary<ChartKind, [any ChartEntry]>,
+        year: Int?
+    ) -> OrderedDictionary<ChartKind, [ChildChartEntry]> {
+        var sortedChildEntries: OrderedDictionary<ChartKind, [ChildChartEntry]> = [:]
         for (chartType, entries) in childEntries {
             let aggregates: [ChartEntryAggregate]
             switch chartType {
@@ -393,7 +397,7 @@ private extension ChartRepository {
                 aggregates = ArtistChartRepository.aggregateEntries(artists, by: .totalUnits, year: year)
             }
 
-            rankedChildEntries[chartType] = aggregates.map { aggregate in
+            sortedChildEntries[chartType] = aggregates.map { aggregate in
                 return ChildChartEntry(
                     id: aggregate.parent.id,
                     name: aggregate.parent.name,
@@ -401,7 +405,7 @@ private extension ChartRepository {
             }
         }
 
-        return rankedChildEntries
+        return sortedChildEntries
     }
 }
 
@@ -409,8 +413,8 @@ private extension ChartRepository {
 extension ChartRepository {
     static func generateYearEndChart(for year: Int, metric: ChartMetric) -> [YearEndChartEntry] {
         let key = YearAndMetricKey(year: year, metric: metric)
-        if let chart = yearEndChartCache[key] {
-            return chart
+        if let cache = yearEndChartCache[key] {
+            return cache
         }
 
         let entries = getCharts(in: year).flatMap { $0.entries }
@@ -446,8 +450,8 @@ extension ChartRepository {
     }
 
     static func generateAllTimeChart(metric: ChartMetric) -> [AllTimeChartEntry] {
-        if let chart = allTimeChartCache[metric] {
-            return chart
+        if let cache = allTimeChartCache[metric] {
+            return cache
         }
 
         let entries = allCharts.value.flatMap { $0.entries }
