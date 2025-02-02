@@ -1,5 +1,5 @@
 //
-//  TopChartEntriesView.swift
+//  TopChartEntriesScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/13/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TopChartEntriesView<ViewModel: TopChartEntriesViewModelProtocol>: View {
+struct TopChartEntriesScreen<ViewModel: TopChartEntriesViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @State private var loading = true
     @State private var chartType: TopChartKind = .track
@@ -50,7 +50,7 @@ struct TopChartEntriesView<ViewModel: TopChartEntriesViewModelProtocol>: View {
     }
 }
 
-private extension TopChartEntriesView {
+private extension TopChartEntriesScreen {
     private var navigationTitle: String {
         return [user?.name, "charts"].compactMap { $0 }.joined(separator: " ")
     }
@@ -100,7 +100,7 @@ private extension TopChartEntriesView {
     func chartsList(for charts: [TopChartEntryUIModel]) -> some View {
         ForEach(charts) { chart in
             NavigationLink {
-                ChartView<ChartViewModel>(topChartEntry: chart)
+                ChartScreen<ChartViewModel>(topChartEntry: chart)
             } label: {
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading) {
@@ -258,5 +258,5 @@ private extension TopChartEntriesView {
         }
     }
 
-    return TopChartEntriesView(viewModel: MockViewModel())
+    return TopChartEntriesScreen(viewModel: MockViewModel())
 }

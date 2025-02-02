@@ -1,5 +1,5 @@
 //
-//  ChartView.swift
+//  ChartScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/9/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
+struct ChartScreen<ViewModel: ChartsViewModelProtocol>: View {
     let topChartEntry: TopChartEntryUIModel
 
     @StateObject private var viewModel = ViewModel()
@@ -22,7 +22,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
             Section {
                 ForEach(entries) { entry in
                     NavigationLink {
-                        ChartEntryDetailsView<ChartEntryDetailsViewModel>(entry: entry.parent, year: nil)
+                        ChartEntryDetailsScreen<ChartEntryDetailsViewModel>(entry: entry.parent, year: nil)
                     } label: {
                         HStack(alignment: .top) {
                             VStack {
@@ -158,7 +158,7 @@ struct ChartView<ViewModel: ChartsViewModelProtocol>: View {
     }
 
     return NavigationView {
-        ChartView<MockViewModel>(topChartEntry: TopChartEntryUIModel(
+        ChartScreen<MockViewModel>(topChartEntry: TopChartEntryUIModel(
             id: "",
             title: nil,
             streams: nil,

@@ -1,5 +1,5 @@
 //
-//  IndexView.swift
+//  IndexScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/7/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct IndexView<ViewModel: IndexViewModelProtocol>: View {
+struct IndexScreen<ViewModel: IndexViewModelProtocol>: View {
     @StateObject var viewModel = ViewModel()
     @State private var user: UserUIModel?
 
@@ -49,17 +49,17 @@ struct IndexView<ViewModel: IndexViewModelProtocol>: View {
     }
 }
 
-private extension IndexView {
+private extension IndexScreen {
     var topChartEntriesView: some View {
-        TopChartEntriesView(viewModel: TopChartEntriesViewModel())
+        TopChartEntriesScreen(viewModel: TopChartEntriesViewModel())
     }
 
     var yearEndChartsView: some View {
-        YearEndChartsView(viewModel: YearEndChartsViewModel())
+        YearEndChartsScreen(viewModel: YearEndChartsViewModel())
     }
 
     var allTimeChartsView: some View {
-        AllTimeChartsView(viewModel: AllTimeChartsViewModel())
+        AllTimeChartsScreen(viewModel: AllTimeChartsViewModel())
     }
 }
 
@@ -70,5 +70,5 @@ private extension IndexView {
         }
     }
 
-    return IndexView<MockViewModel>()
+    return IndexScreen<MockViewModel>()
 }

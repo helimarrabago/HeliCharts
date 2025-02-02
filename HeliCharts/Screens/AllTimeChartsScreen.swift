@@ -1,68 +1,59 @@
 //
-//  YearEndChartsView.swift
+//  AllTimeChartsScreen.swift
 //  HeliCharts
 //
-//  Created by Helimar Rabago on 1/13/25.
+//  Created by Helimar Rabago on 1/21/25.
 //
 
 import SwiftUI
 
-struct YearEndChartsView<ViewModel: YearEndChartsViewModelProtocol>: View {
+struct AllTimeChartsScreen<ViewModel: AllTimeChartsViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @State private var loading = true
-    @State private var years: [Int] = []
-    @State private var selectedYear: Int = 0
     @State private var chartMetric: ChartMetric = .totalUnits
     @State private var chartKind: ChartKind = .track
-    @State private var tracks: [YearEndChartEntryUIModel] = []
-    @State private var albums: [YearEndChartEntryUIModel] = []
-    @State private var artists: [YearEndChartEntryUIModel] = []
+    @State private var tracks: [AllTimeChartEntryUIModel] = []
+    @State private var albums: [AllTimeChartEntryUIModel] = []
+    @State private var artists: [AllTimeChartEntryUIModel] = []
 
     var body: some View {
         NavigationView {
             contentView
-                .navigationTitle("Year-end charts")
+                .navigationTitle("All-time charts")
         }
         .task {
             guard loading else { return }
-            let years = await viewModel.getYears()
+            await generateAllTimeChart()
             withAnimation {
                 self.loading = false
-                self.selectedYear = years.last!
-                self.years = years
-            }
-        }
-        .onChange(of: selectedYear) { _, _ in
-            Task {
-                await generateYearEndChart()
-            }
-        }
-        .onChange(of: chartMetric) { _, _ in
-            Task {
-                await generateYearEndChart()
             }
         }
         .onChange(of: chartKind) { _, _ in
             Task {
-                await generateYearEndChart()
+                await generateAllTimeChart()
+            }
+        }
+        .onChange(of: chartMetric) { _, _ in
+            Task {
+                await generateAllTimeChart()
             }
         }
     }
 
-    private func generateYearEndChart() async {
+    private func generateAllTimeChart() async {
         switch chartKind {
         case .track:
-            let tracks = await viewModel.generateYearEndTrackChart(for: selectedYear, metric: chartMetric)
+            let tracks = await viewModel.generateAllTimeTrackChart(metric: chartMetric)
             withAnimation {
                 self.tracks = tracks
             }
         case .album:
-            let albums = await viewModel.generateYearEndAlbumChart(for: selectedYear, metric: chartMetric)
+            let albums = await viewModel.generateAllTimeAlbumChart(metric: chartMetric)
             withAnimation {
                 self.albums = albums
             }
         case .artist:
-            let artists = await viewModel.generateYearEndArtistChart(for: selectedYear, metric: chartMetric)
+            let artists = await viewModel.generateAllTimeArtistChart(metric: chartMetric)
             withAnimation {
                 self.artists = artists
             }
@@ -70,7 +61,7 @@ struct YearEndChartsView<ViewModel: YearEndChartsViewModelProtocol>: View {
     }
 }
 
-private extension YearEndChartsView {
+private extension AllTimeChartsScreen {
     @ViewBuilder
     var contentView: some View {
         if loading {
@@ -85,30 +76,13 @@ private extension YearEndChartsView {
                     }
                 } header: {
                     VStack(alignment: .leading, spacing: 2) {
-                        HStack {
-                            yearsPicker
-                            chartMetricPicker
-                        }
+                        chartMetricPicker
                         chartKindPicker
                     }
                     .padding(.bottom, 4)
                 }
             }
             .listStyle(.plain)
-        }
-    }
-
-    var yearsPicker: some View {
-        HStack(spacing: 0) {
-            Text("Year:")
-                .font(.callout)
-                .fontWeight(.semibold)
-
-            Picker("Year", selection: $selectedYear) {
-                ForEach(years, id: \.self) { year in
-                    Text(String(year))
-                }
-            }
         }
     }
 
@@ -135,29 +109,24 @@ private extension YearEndChartsView {
         .pickerStyle(.segmented)
     }
 
-    func chartList(for entries: [YearEndChartEntryUIModel]) -> some View {
+    func chartList(for entries: [AllTimeChartEntryUIModel]) -> some View {
         ForEach(entries) { entry in
             NavigationLink {
-                ChartEntryDetailsView<ChartEntryDetailsViewModel>(entry: entry.parent, year: selectedYear)
+                ChartEntryDetailsScreen<ChartEntryDetailsViewModel>(entry: entry.parent, year: nil)
             } label: {
-                ChartEntryDetailedCell(entry: entry)
+                ChartEntryDetailCell(entry: entry)
             }
         }
     }
 }
 
 #Preview {
-    final class MockViewModel: YearEndChartsViewModelProtocol {
-        func getYears() async -> [Int] {
-            return [2023, 2024, 2025]
-        }
-
-        func generateYearEndTrackChart(for year: Int, metric: ChartMetric) -> [YearEndChartEntryUIModel] {
-            return [YearEndChartEntryUIModel(
+    final class MockViewModel: AllTimeChartsViewModelProtocol {
+        func generateAllTimeTrackChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+            return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Beyoncé - 6 Inch (feat. The Weeknd)",
                 rank: "1",
-                movement: ChartMovementUIModel(movement: .upwards(value: 3)),
                 peak: "#1 (2x)",
                 weeks: "21",
                 streams: "2.1 B",
@@ -167,12 +136,11 @@ private extension YearEndChartsView {
                 parent: MockChartEntry())]
         }
 
-        func generateYearEndAlbumChart(for year: Int, metric: ChartMetric) -> [YearEndChartEntryUIModel] {
-            return [YearEndChartEntryUIModel(
+        func generateAllTimeAlbumChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+            return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Cowboy Carter",
                 rank: "1",
-                movement: ChartMovementUIModel(movement: .upwards(value: 3)),
                 peak: "#1 (11x)",
                 weeks: "32",
                 streams: "2.1 B",
@@ -182,12 +150,11 @@ private extension YearEndChartsView {
                 parent: MockChartEntry())]
         }
 
-        func generateYearEndArtistChart(for year: Int, metric: ChartMetric) -> [YearEndChartEntryUIModel] {
-            return [YearEndChartEntryUIModel(
+        func generateAllTimeArtistChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+            return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Beyoncé",
                 rank: "1",
-                movement: ChartMovementUIModel(movement: .upwards(value: 3)),
                 peak: "#1 (34x)",
                 weeks: "54",
                 streams: "2.1 B",
@@ -198,5 +165,5 @@ private extension YearEndChartsView {
         }
     }
 
-    return YearEndChartsView(viewModel: MockViewModel())
+    return AllTimeChartsScreen(viewModel: MockViewModel())
 }

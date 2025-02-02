@@ -1,5 +1,5 @@
 //
-//  ChartEntryDetailedCell.swift
+//  ChartEntryDetailCell.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/22/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChartEntryDetailedCell: View {
+struct ChartEntryDetailCell: View {
     let rank: String
     let movement: ChartMovementUIModel?
     let title: String
@@ -68,7 +68,7 @@ struct ChartEntryDetailedCell: View {
     }
 }
 
-private extension ChartEntryDetailedCell {
+private extension ChartEntryDetailCell {
     var rankView: some View {
         VStack {
             Text(rank)
@@ -143,7 +143,7 @@ private extension ChartEntryDetailedCell {
 
 #Preview {
     List {
-        ChartEntryDetailedCell(entry: ChildChartEntryUIModel(
+        ChartEntryDetailCell(entry: ChildChartEntryUIModel(
             id: "1",
             title: "BODYGUARD",
             rank: "1",

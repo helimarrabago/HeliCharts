@@ -23,7 +23,7 @@ struct HeliChartsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            IndexView<IndexViewModel>()
+            IndexScreen<IndexViewModel>()
                 .environmentObject(IndexViewModel())
         }
         .modelContainer(sharedModelContainer)

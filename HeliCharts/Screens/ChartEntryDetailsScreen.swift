@@ -1,5 +1,5 @@
 //
-//  ChartEntryDetailsView.swift
+//  ChartEntryDetailsScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/11/25.
@@ -9,7 +9,7 @@ import OrderedCollections
 import SwiftUI
 
 // swiftlint:disable file_length
-struct ChartEntryDetailsView<ViewModel: ChartEntryDetailsViewModelProtocol>: View {
+struct ChartEntryDetailsScreen<ViewModel: ChartEntryDetailsViewModelProtocol>: View {
     let entry: any ChartEntry
     let year: Int?
 
@@ -60,7 +60,7 @@ struct ChartEntryDetailsView<ViewModel: ChartEntryDetailsViewModelProtocol>: Vie
     }
 }
 
-private extension ChartEntryDetailsView {
+private extension ChartEntryDetailsScreen {
     func headerView(details: ChartEntryDetailsUIModel) -> some View {
         Section {
             HStack(spacing: 16) {
@@ -222,7 +222,7 @@ private extension ChartEntryDetailsView {
                 childEntriesList(element.value)
             } header: {
                 NavigationLink {
-                    ChartEntryChildEntriesView(entries: element, year: year)
+                    ChartEntryChildEntriesScreen(entries: element, year: year)
                 } label: {
                     Text("Top " + element.key.objects + " ›")
                         .font(.title)
@@ -238,9 +238,9 @@ private extension ChartEntryDetailsView {
     func childEntriesList(_ childEntries: [ChildChartEntryUIModel]) -> some View {
         ForEach(childEntries.prefix(5)) { entry in
             NavigationLink {
-                ChartEntryDetailsView(entry: entry.parent, year: year)
+                ChartEntryDetailsScreen(entry: entry.parent, year: year)
             } label: {
-                ChartEntryDetailedCell(entry: entry)
+                ChartEntryDetailCell(entry: entry)
             }
         }
     }
@@ -446,7 +446,7 @@ private struct ChartRunCell: View {
     }
 
     return NavigationView {
-        ChartEntryDetailsView<MockViewModel>(
+        ChartEntryDetailsScreen<MockViewModel>(
             entry: ArtistEntry(
                 mbid: "",
                 name: "Beyoncé",

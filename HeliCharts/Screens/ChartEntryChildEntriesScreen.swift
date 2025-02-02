@@ -1,5 +1,5 @@
 //
-//  ChartEntryChildEntriesView.swift
+//  ChartEntryChildEntriesScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 1/19/25.
@@ -8,16 +8,16 @@
 import OrderedCollections
 import SwiftUI
 
-struct ChartEntryChildEntriesView: View {
+struct ChartEntryChildEntriesScreen: View {
     let entries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>.Element
     let year: Int?
 
     var body: some View {
         List(entries.value) { entry in
             NavigationLink {
-                ChartEntryDetailsView<ChartEntryDetailsViewModel>(entry: entry.parent, year: year)
+                ChartEntryDetailsScreen<ChartEntryDetailsViewModel>(entry: entry.parent, year: year)
             } label: {
-                ChartEntryDetailedCell(entry: entry)
+                ChartEntryDetailCell(entry: entry)
             }
         }
         .listStyle(.plain)
@@ -28,7 +28,7 @@ struct ChartEntryChildEntriesView: View {
 
 #Preview {
     NavigationView {
-        ChartEntryChildEntriesView(
+        ChartEntryChildEntriesScreen(
             entries: (
                 key: .track,
                 value: [
