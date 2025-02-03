@@ -15,11 +15,13 @@ protocol ChartRepository {
     typealias ChartEntryType = ChartType.Entry
 
     static var allCharts: CurrentValueSubject<[ChartType], Never> { get set }
+    static var appearancesSoFarCache: [WeekKey<ChartEntryType>: [ChartEntryType]] { get set }
     static var totalUnitsCache: [YearKey<ChartEntryType>: ChartEntryUnits<ChartEntryType>] { get set }
     static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] { get set }
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] { get set }
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] { get set }
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] { get set }
+    static var mostWeeklyUnitsCache: [MetricKey: [MostWeeklyUnits]] { get set }
 }
 
 // MARK: - Entry-specific Methods
@@ -92,7 +94,7 @@ extension ChartRepository {
                 childEntries: childEntries)
         } else {
             let (peak, weeksOnPeak) = getPeakRank(among: allAppearances)
-            let units = computeTotalUnits(among: allAppearances, in: nil)
+            let units = computeTotalUnits(among: allAppearances, in: year)
             let certifications = generateCertifications(for: entry, totalUnits: units.total)
             history = ChartOverallHistory(
                 parent: entry,
@@ -112,11 +114,17 @@ extension ChartRepository {
     }
 
     static func getAppearancesSoFar(of entry: ChartEntryType) -> [ChartEntryType] {
+        let id = WeekKey(entry: entry, week: entry.week)
+        if let cache = appearancesSoFarCache[id] {
+            return cache
+        }
+
         guard allCharts.value.count > 1, let weekIndex = getIndex(of: entry.week) else { return [entry] }
 
         let chartsSoFar = Array(allCharts.value.suffix(from: weekIndex))
         let appearancesSoFar = chartsSoFar.compactMap { $0.getSameEntry(as: entry) }
 
+        appearancesSoFarCache[id] = appearancesSoFar
         return appearancesSoFar
     }
 }
@@ -598,7 +606,52 @@ private extension ChartRepository {
             }
         }
     }
+}
 
+// MARK: - Records
+extension ChartRepository {
+    static func getMostWeeklyUnits(metric: ChartMetric) -> [MostWeeklyUnits] {
+        let id = MetricKey(metric: metric)
+        if let cache = mostWeeklyUnitsCache[id] {
+            return cache
+        }
+
+        let allCharts = allCharts.value
+        var sortedEntries = allCharts.flatMap { $0.entries }.sorted { lhs, rhs in
+            let lhsWeeks = getAppearancesSoFar(of: lhs).count
+            let lhsUnits = lhs.computeUnits(weeks: lhsWeeks)
+
+            let rhsWeeks = getAppearancesSoFar(of: rhs).count
+            let rhsUnits = rhs.computeUnits(weeks: rhsWeeks)
+
+            switch metric {
+            case .totalUnits:
+                return lhsUnits.total > rhsUnits.total
+            case .streams:
+                return lhsUnits.streams > rhsUnits.streams
+            case .sales:
+                return lhsUnits.sales > rhsUnits.sales
+            }
+        }
+        sortedEntries = Array(sortedEntries.prefix(allCharts.count))
+
+        let mostWeeklyUnits = sortedEntries.enumerated().map { index, entry in
+            let weeks = getAppearancesSoFar(of: entry).count
+            let units = entry.computeUnits(weeks: weeks)
+
+            return MostWeeklyUnits(
+                name: [entry.artist?.name, entry.name].compactMap { $0 }.joined(separator: " - "),
+                rank: index + 1,
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
+                position: entry.rank,
+                week: entry.week)
+        }
+
+        mostWeeklyUnitsCache[id] = mostWeeklyUnits
+        return mostWeeklyUnits
+    }
 }
 
 private struct ChartEntryAggregateSnapshot<ChartEntryType: ChartEntry> {
@@ -608,20 +661,5 @@ private struct ChartEntryAggregateSnapshot<ChartEntryType: ChartEntry> {
     let weeksOnPeak: Int
     let weeksOnChart: Int
     let appearances: [ChartEntryType]
-}
-
-struct WeekKey<ChartEntryType: ChartEntry>: Hashable {
-    let entry: ChartEntryType
-    let week: WeekRange
-}
-
-struct YearKey<ChartEntryType: ChartEntry>: Hashable {
-    let entry: ChartEntryType
-    let year: Int?
-}
-
-struct YearAndMetricKey: Hashable {
-    let year: Int
-    let metric: ChartMetric
 }
 // swiftlint:enable file_length

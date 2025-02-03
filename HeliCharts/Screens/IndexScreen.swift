@@ -13,28 +13,25 @@ struct IndexScreen<ViewModel: IndexViewModelProtocol>: View {
 
     var body: some View {
         TabView {
-            topChartEntriesView
+            topChartEntriesScreen
                 .tabItem {
                     Label("Weekly", systemImage: "calendar")
                 }
 
-            yearEndChartsView
+            yearEndChartsScreen
                 .tabItem {
                     Label("Year-end", systemImage: "music.note.list")
                 }
 
-            allTimeChartsView
+            allTimeChartsScreen
                 .tabItem {
                     Label("All-time", systemImage: "chart.bar.xaxis.ascending.badge.clock")
                 }
 
-            NavigationView {
-                Text("Soon")
-                    .navigationTitle("Records")
-            }
-            .tabItem {
-                Label("Records", systemImage: "trophy")
-            }
+            recordsScreen
+                .tabItem {
+                    Label("Records", systemImage: "trophy")
+                }
         }
         .task {
             do {
@@ -50,16 +47,20 @@ struct IndexScreen<ViewModel: IndexViewModelProtocol>: View {
 }
 
 private extension IndexScreen {
-    var topChartEntriesView: some View {
+    var topChartEntriesScreen: some View {
         TopChartEntriesScreen(viewModel: TopChartEntriesViewModel())
     }
 
-    var yearEndChartsView: some View {
+    var yearEndChartsScreen: some View {
         YearEndChartsScreen(viewModel: YearEndChartsViewModel())
     }
 
-    var allTimeChartsView: some View {
+    var allTimeChartsScreen: some View {
         AllTimeChartsScreen(viewModel: AllTimeChartsViewModel())
+    }
+
+    var recordsScreen: some View {
+        RecordsScreen()
     }
 }
 

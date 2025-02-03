@@ -11,9 +11,11 @@ import Foundation
 struct ArtistChartRepository: ChartRepository {
     typealias ChartType = ArtistChart
     static var allCharts = CurrentValueSubject<[ArtistChart], Never>([])
+    static var appearancesSoFarCache: [WeekKey<ChartEntryType>: [ChartEntryType]] = [:]
     static var totalUnitsCache: [YearKey<ChartEntryType>: ChartEntryUnits<ChartEntryType>] = [:]
     static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] = [:]
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] = [:]
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] = [:]
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] = [:]
+    static var mostWeeklyUnitsCache: [MetricKey: [MostWeeklyUnits]] = [:]
 }

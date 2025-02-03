@@ -191,3 +191,13 @@ struct ChartEntryUnits<ChartEntryType: ChartEntry> {
     var streamsEquivalent: Int { return Int(rawStreams * Double(ChartEntryType.streamConversionRate)) }
     var total: Int { return Int(rawStreams + rawSales) }
 }
+
+struct MostWeeklyUnits {
+    let name: String
+    let rank: Int
+    let streams: Int
+    let sales: Int
+    let totalUnits: Int
+    let position: Int
+    let week: WeekRange
+}

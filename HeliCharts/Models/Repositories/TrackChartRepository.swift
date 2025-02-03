@@ -11,9 +11,11 @@ import Foundation
 struct TrackChartRepository: ChartRepository {
     typealias Chart = TrackChart
     static var allCharts = CurrentValueSubject<[TrackChart], Never>([])
+    static var appearancesSoFarCache: [WeekKey<ChartEntryType>: [ChartEntryType]] = [:]
     static var totalUnitsCache: [YearKey<ChartEntryType>: ChartEntryUnits<ChartEntryType>] = [:]
     static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] = [:]
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] = [:]
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] = [:]
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] = [:]
+    static var mostWeeklyUnitsCache: [MetricKey: [MostWeeklyUnits]] = [:]
 }

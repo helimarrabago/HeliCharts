@@ -15,6 +15,7 @@ protocol ChartEntry: Hashable {
     var rank: Int { get }
     var week: WeekRange { get }
 
+    static var unitsCache: [WeekKey<Self>: ChartEntryUnits<Self>] { get set }
     static var streamConversionRate: Int { get }
     static func computeUnits(rank: Int, playCount: Int, weeks: Int) -> ChartEntryUnits<Self>
 }
@@ -27,7 +28,15 @@ extension ChartEntry {
 
 extension ChartEntry {
     func computeUnits(weeks: Int) -> ChartEntryUnits<Self> {
-        return Self.computeUnits(rank: rank, playCount: playCount, weeks: weeks)
+        let id = WeekKey(entry: self, week: week)
+        if let cache = Self.unitsCache[id] {
+            return cache
+        }
+
+        let units = Self.computeUnits(rank: rank, playCount: playCount, weeks: weeks)
+
+        Self.unitsCache[id] = units
+        return units
     }
 
     static func computeLongevityBonus(weeks: Int) -> Double {
@@ -42,6 +51,8 @@ struct MockChartEntry: ChartEntry {
     let playCount: Int = 0
     let rank: Int = 0
     let week: WeekRange = WeekRange(from: 1708012800, to: 1708531200)
+
+    static var unitsCache: [WeekKey<MockChartEntry>: ChartEntryUnits<MockChartEntry>] = [:]
 
     static var streamConversionRate: Int {
         return 0

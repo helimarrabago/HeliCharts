@@ -36,6 +36,8 @@ struct TrackEntry: ChartEntry {
         let artist = response.artist
         self.artist = Artist(id: artist.mbid, name: artist.text)
     }
+
+    static var unitsCache: [WeekKey<TrackEntry>: ChartEntryUnits<TrackEntry>] = [:]
 }
 
 extension TrackEntry: Identifiable {

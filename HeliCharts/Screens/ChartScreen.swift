@@ -24,63 +24,11 @@ struct ChartScreen<ViewModel: ChartsViewModelProtocol>: View {
                     NavigationLink {
                         ChartEntryDetailsScreen<ChartEntryDetailsViewModel>(entry: entry.parent, year: nil)
                     } label: {
-                        HStack(alignment: .top) {
-                            VStack {
-                                Text(entry.rank)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-
-                                Text(entry.movement.symbol)
-                                    .font(.footnote)
-                                    .foregroundStyle(entry.movement.color)
-                            }
-                            .frame(width: 40)
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                VStack(alignment: .leading) {
-                                    Text(entry.title)
-                                        .font(.headline)
-
-                                    HStack {
-                                        Text("Peak: \(entry.peak)")
-                                            .font(.caption)
-
-                                        Text("Weeks: \(entry.weeks)")
-                                            .font(.caption)
-                                    }
-                                }
-
-                                VStack(alignment: .leading) {
-                                    HStack {
-                                        Text("Streams: " + entry.streams)
-                                            .font(.caption)
-                                            .foregroundStyle(Color.secondary)
-
-                                        Text("Sales: " + entry.sales)
-                                            .font(.caption)
-                                            .foregroundStyle(Color.secondary)
-                                    }
-
-                                    Text("Total Units: " + entry.units)
-                                        .font(.subheadline)
-                                        .fontWeight(.semibold)
-                                }
-                            }
-                        }
+                        chartEntryCell(entry: entry)
                     }
                 }
             } header: {
-                VStack(alignment: .center) {
-                    Text("Week \(topChartEntry.weekNumber)")
-                        .font(.largeTitle)
-                        .fontWeight(.heavy)
-                        .foregroundStyle(.white)
-
-                    Text(topChartEntry.week)
-                        .font(.subheadline)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 4)
+                headerView
             }
         }
         .listStyle(.plain)
@@ -88,6 +36,68 @@ struct ChartScreen<ViewModel: ChartsViewModelProtocol>: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             chart = await viewModel.generateDetailedChart(for: topChartEntry)
+        }
+    }
+}
+
+private extension ChartScreen {
+    var headerView: some View {
+        VStack(alignment: .center) {
+            Text("Week \(topChartEntry.weekNumber)")
+                .font(.largeTitle)
+                .fontWeight(.heavy)
+                .foregroundStyle(.white)
+
+            Text(topChartEntry.week)
+                .font(.subheadline)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 4)
+    }
+
+    func chartEntryCell(entry: ChartEntryUIModel) -> some View {
+        HStack(alignment: .top) {
+            VStack {
+                Text(entry.rank)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text(entry.movement.symbol)
+                    .font(.footnote)
+                    .foregroundStyle(entry.movement.color)
+            }
+            .frame(width: 40)
+
+            VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading) {
+                    Text(entry.title)
+                        .font(.headline)
+
+                    HStack {
+                        Text("Peak: \(entry.peak)")
+                            .font(.caption)
+
+                        Text("Weeks: \(entry.weeks)")
+                            .font(.caption)
+                    }
+                }
+
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Streams: " + entry.streams)
+                            .font(.caption)
+                            .foregroundStyle(Color.secondary)
+
+                        Text("Sales: " + entry.sales)
+                            .font(.caption)
+                            .foregroundStyle(Color.secondary)
+                    }
+
+                    Text("Total Units: " + entry.units)
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                }
+            }
         }
     }
 }

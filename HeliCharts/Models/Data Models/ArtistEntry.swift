@@ -33,6 +33,7 @@ struct ArtistEntry: ChartEntry {
     }
 
     let artist: Artist? = nil
+    static var unitsCache: [WeekKey<ArtistEntry>: ChartEntryUnits<ArtistEntry>] = [:]
 }
 
 extension ArtistEntry: Identifiable {
