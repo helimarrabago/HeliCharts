@@ -81,7 +81,7 @@ private extension ChartEntryDetailCell {
                     .foregroundStyle(movement.color)
             }
         }
-        .frame(width: 40)
+        .frame(width: 48)
     }
 
     var infoView: some View {

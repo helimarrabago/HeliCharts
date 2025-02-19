@@ -66,7 +66,7 @@ private extension ChartScreen {
                     .font(.footnote)
                     .foregroundStyle(entry.movement.color)
             }
-            .frame(width: 40)
+            .frame(width: 48)
 
             VStack(alignment: .leading, spacing: 8) {
                 VStack(alignment: .leading) {

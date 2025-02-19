@@ -111,7 +111,7 @@ private extension MostWeeklyUnitsScreen {
                 Text(entry.rank)
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .frame(width: 40)
+                    .frame(width: 48)
 
                 VStack(alignment: .leading, spacing: 8) {
                     VStack(alignment: .leading) {

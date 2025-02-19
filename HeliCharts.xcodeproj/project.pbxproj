@@ -143,6 +143,12 @@
 		BA60075B2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
 		BA60075C2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
 		BA60075D2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
+		BA62D02D2D578482002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */; };
+		BA62D02E2D578483002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */; };
+		BA62D02F2D57849F002FF68B /* RecordsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */; };
+		BA62D0302D5784A0002FF68B /* RecordsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */; };
+		BA62D0312D5784D7002FF68B /* MostWeeklyUnitsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */; };
+		BA62D0322D5784D8002FF68B /* MostWeeklyUnitsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */; };
 		BA67D1C92D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CA2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CB2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
@@ -312,6 +318,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BA0654472D52F2F500C9B8BB /* Records */ = {
+			isa = PBXGroup;
+			children = (
+				BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */,
+			);
+			path = Records;
+			sourceTree = "<group>";
+		};
 		BA1707E42D2FE54B0036292F /* View Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -321,7 +335,7 @@
 				BAEE20712D326B6F00551EA7 /* ChartEntryDetailsViewModel.swift */,
 				BA76E4422D3558EF00D03DFA /* YearEndChartsViewModel.swift */,
 				BA5BA98E2D3FCE3C002859BD /* AllTimeChartsViewModel.swift */,
-				BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */,
+				BA0654472D52F2F500C9B8BB /* Records */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -658,6 +672,7 @@
 				BA5F028B2D40EA8B008AF417 /* ChartRunSnapshotUIModel.swift in Sources */,
 				BA5F028C2D40EA8B008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F028D2D40EA8B008AF417 /* TrackChart.swift in Sources */,
+				BA62D02D2D578482002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */,
 				BA5F028E2D40EA8B008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F028F2D40EA8B008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02902D40EA8B008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -671,6 +686,7 @@
 				BA5F02982D40EA8B008AF417 /* User.swift in Sources */,
 				BA5F02992D40EA8B008AF417 /* TopChartEntriesViewModel.swift in Sources */,
 				BA5F029A2D40EA8B008AF417 /* AllTimeChartsScreen.swift in Sources */,
+				BA62D02F2D57849F002FF68B /* RecordsScreen.swift in Sources */,
 				BA5F029B2D40EA8B008AF417 /* ChartEntryUIModel.swift in Sources */,
 				BA5F029C2D40EA8B008AF417 /* AlbumRepository.swift in Sources */,
 				BA5F029D2D40EA8B008AF417 /* Album.swift in Sources */,
@@ -698,6 +714,7 @@
 				BA67D1CA2D4DD62900642984 /* Credentials.swift in Sources */,
 				BA5F02B12D40EA8B008AF417 /* ChartEntryDetailsViewModel.swift in Sources */,
 				BA5F02B22D40EA8B008AF417 /* AlbumChartResponse.swift in Sources */,
+				BA62D0312D5784D7002FF68B /* MostWeeklyUnitsScreen.swift in Sources */,
 				BA5F02B32D40EA8B008AF417 /* ChartViewModel.swift in Sources */,
 				BA5F02B42D40EA8B008AF417 /* Settings.swift in Sources */,
 				BA60075C2D51021F00EF47FE /* CacheKeys.swift in Sources */,
@@ -722,6 +739,7 @@
 				BA5F02D52D40EADD008AF417 /* ChartRunSnapshotUIModel.swift in Sources */,
 				BA5F02D62D40EADD008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F02D72D40EADD008AF417 /* TrackChart.swift in Sources */,
+				BA62D02E2D578483002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */,
 				BA5F02D82D40EADD008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F02D92D40EADD008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02DA2D40EADD008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -735,6 +753,7 @@
 				BA5F02E22D40EADD008AF417 /* User.swift in Sources */,
 				BA5F02E32D40EADD008AF417 /* TopChartEntriesViewModel.swift in Sources */,
 				BA5F02E42D40EADD008AF417 /* AllTimeChartsScreen.swift in Sources */,
+				BA62D0302D5784A0002FF68B /* RecordsScreen.swift in Sources */,
 				BA5F02E52D40EADD008AF417 /* ChartEntryUIModel.swift in Sources */,
 				BA5F02E62D40EADD008AF417 /* AlbumRepository.swift in Sources */,
 				BA5F02E72D40EADD008AF417 /* Album.swift in Sources */,
@@ -762,6 +781,7 @@
 				BA67D1CB2D4DD62900642984 /* Credentials.swift in Sources */,
 				BA5F02FB2D40EADD008AF417 /* ChartEntryDetailsViewModel.swift in Sources */,
 				BA5F02FC2D40EADD008AF417 /* AlbumChartResponse.swift in Sources */,
+				BA62D0322D5784D8002FF68B /* MostWeeklyUnitsScreen.swift in Sources */,
 				BA5F02FD2D40EADD008AF417 /* ChartViewModel.swift in Sources */,
 				BA5F02FE2D40EADD008AF417 /* Settings.swift in Sources */,
 				BA60075D2D51021F00EF47FE /* CacheKeys.swift in Sources */,

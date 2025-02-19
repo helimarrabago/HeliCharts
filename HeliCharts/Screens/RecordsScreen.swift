@@ -16,6 +16,8 @@ struct RecordsScreen: View {
                 } label: {
                     Text("Most units in a single week")
                 }
+
+                Text("Longest running #1 entries")
             }
             .navigationTitle("Records")
         }

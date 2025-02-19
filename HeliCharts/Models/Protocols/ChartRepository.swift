@@ -463,7 +463,7 @@ extension ChartRepository {
         }
 
         let entries = allCharts.value.flatMap { $0.entries }
-        let aggregates = aggregateEntries(entries, by: metric, year: nil, limit: 100)
+        let aggregates = aggregateEntries(entries, by: metric, year: nil, limit: 200)
         let topEntries = aggregates.map { aggregate in
             return AllTimeChartEntry(
                 id: aggregate.parent.id,
@@ -616,8 +616,7 @@ extension ChartRepository {
             return cache
         }
 
-        let allCharts = allCharts.value
-        var sortedEntries = allCharts.flatMap { $0.entries }.sorted { lhs, rhs in
+        var sortedEntries = allCharts.value.flatMap { $0.entries }.sorted { lhs, rhs in
             let lhsWeeks = getAppearancesSoFar(of: lhs).count
             let lhsUnits = lhs.computeUnits(weeks: lhsWeeks)
 
@@ -633,7 +632,7 @@ extension ChartRepository {
                 return lhsUnits.sales > rhsUnits.sales
             }
         }
-        sortedEntries = Array(sortedEntries.prefix(allCharts.count))
+        sortedEntries = Array(sortedEntries.prefix(20))
 
         let mostWeeklyUnits = sortedEntries.enumerated().map { index, entry in
             let weeks = getAppearancesSoFar(of: entry).count

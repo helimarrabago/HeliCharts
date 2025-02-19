@@ -46,5 +46,5 @@ struct MostWeeklyUnitsUIModel {
 }
 
 extension MostWeeklyUnitsUIModel: Identifiable {
-    var id: String { return rank }
+    var id: String { return name + week }
 }
