@@ -16,6 +16,7 @@ struct AlbumEntry: ChartEntry {
     let playCount: Int
     let rank: Int
     let week: WeekRange
+    var finalRank: Int!
 
     init(mbid: String, name: String, artist: Artist, playCount: Int, rank: Int, week: WeekRange) {
         self.mbid = mbid

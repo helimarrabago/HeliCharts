@@ -45,7 +45,7 @@ struct ChartEntryUIModel: Identifiable {
 
     init(entry: some ChartEntry) {
         self.id = entry.id
-        self.rank = String(entry.rank)
+        self.rank = String(entry.finalRank)
         self.title = [entry.artist?.name, entry.name].compactMap { $0 }.joined(separator: " - ")
         self.parent = entry
 

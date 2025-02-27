@@ -15,6 +15,9 @@ protocol ChartEntry: Hashable {
     var rank: Int { get }
     var week: WeekRange { get }
 
+    var finalRank: Int! { get set }
+    mutating func setFinalRank(_ finalRank: Int)
+
     static var unitsCache: [WeekKey<Self>: ChartEntryUnits<Self>] { get set }
     static var streamConversionRate: Int { get }
     static func computeUnits(rank: Int, playCount: Int, weeks: Int) -> ChartEntryUnits<Self>
@@ -27,6 +30,10 @@ extension ChartEntry {
 }
 
 extension ChartEntry {
+    mutating func setFinalRank(_ finalRank: Int) {
+        self.finalRank = finalRank
+    }
+
     func computeUnits(weeks: Int) -> ChartEntryUnits<Self> {
         let id = WeekKey(entry: self, week: week)
         if let cache = Self.unitsCache[id] {
@@ -51,6 +58,7 @@ struct MockChartEntry: ChartEntry {
     let playCount: Int = 0
     let rank: Int = 0
     let week: WeekRange = WeekRange(from: 1708012800, to: 1708531200)
+    var finalRank: Int! = 0
 
     static var unitsCache: [WeekKey<MockChartEntry>: ChartEntryUnits<MockChartEntry>] = [:]
 

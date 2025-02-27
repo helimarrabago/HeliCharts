@@ -10,7 +10,7 @@ import Foundation
 struct AlbumChart: Chart {
     typealias EntryType = AlbumEntry
 
-    let entries: [AlbumEntry]
+    var entries: [AlbumEntry]
     let week: WeekRange
     let kind: ChartKind = .album
 
@@ -46,7 +46,7 @@ extension AlbumChart: Hashable {
 
 extension AlbumChart {
     func getTopEntry() -> AlbumEntry? {
-        let topTrack = entries.first(where: { $0.rank == 1 })
+        let topTrack = entries.first(where: { $0.finalRank == 1 })
         return topTrack
     }
 

@@ -10,7 +10,7 @@ import Foundation
 struct TrackChart: Chart {
     typealias EntryType = TrackEntry
 
-    let entries: [TrackEntry]
+    var entries: [TrackEntry]
     let week: WeekRange
     let kind: ChartKind = .track
 
@@ -46,7 +46,7 @@ extension TrackChart: Hashable {
 
 extension TrackChart {
     func getTopEntry() -> TrackEntry? {
-        let topTrack = entries.first(where: { $0.rank == 1 })
+        let topTrack = entries.first(where: { $0.finalRank == 1 })
         return topTrack
     }
 

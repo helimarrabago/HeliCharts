@@ -46,7 +46,7 @@ extension ChartRepository {
         if appearancesSoFar.count == 1 {
             history = ChartEntrySnapshotHistory(
                 movement: .new,
-                peak: entry.rank,
+                peak: entry.finalRank,
                 weeksOnPeak: 1,
                 weeksOnChart: 1)
         } else {
@@ -76,14 +76,14 @@ extension ChartRepository {
             let units = entry.computeUnits(weeks: 1)
             let certifications = generateCertifications(for: entry, totalUnits: units.total)
             let position = ChartPosition(
-                rank: entry.rank,
+                rank: entry.finalRank,
                 units: units.total,
                 runningUnits: units.total,
                 date: Date(timeIntervalSince1970: TimeInterval(entry.week.from)),
                 weekNumber: getWeekNumber(of: entry.week))
             history = ChartOverallHistory(
                 parent: entry,
-                peak: entry.rank,
+                peak: entry.finalRank,
                 weeksOnPeak: 1,
                 weeksOnChart: 1,
                 streams: units.streamsEquivalent,
@@ -111,6 +111,12 @@ extension ChartRepository {
 
         overallHistoryCache[key] = history
         return history
+    }
+
+    static func getWeeksSoFar(of entry: ChartEntryType) -> Int {
+        guard allCharts.value.count > 1, let weekIndex = getIndex(of: entry.week) else { return 1 }
+        let chartsSoFar = Array(allCharts.value.suffix(from: weekIndex))
+        return chartsSoFar.filter { $0.getSameEntry(as: entry) != nil }.count
     }
 
     static func getAppearancesSoFar(of entry: ChartEntryType) -> [ChartEntryType] {
@@ -154,8 +160,8 @@ private extension ChartRepository {
             return .reappear // Re-appeared
         }
 
-        let previousRank = previousAppearance.rank
-        let movement = previousRank - entry.rank
+        let previousRank = previousAppearance.finalRank!
+        let movement = previousRank - entry.finalRank
 
         if movement > 0 {
             return .upwards(value: movement) // Climbed up
@@ -167,8 +173,8 @@ private extension ChartRepository {
     }
 
     static func getPeakRank(among appearances: [ChartEntryType]) -> (peak: Int, weeks: Int) {
-        let peak = appearances.map { $0.rank }.min()!
-        let weeks = appearances.filter { $0.rank == peak }.count
+        let peak = appearances.map { $0.finalRank }.min()!
+        let weeks = appearances.filter { $0.finalRank == peak }.count
         return (peak, weeks)
     }
 
@@ -323,7 +329,7 @@ private extension ChartRepository {
                 runningUnits += units.total
 
                 let position = ChartPosition(
-                    rank: entry.rank,
+                    rank: entry.finalRank,
                     units: units.total,
                     runningUnits: runningUnits,
                     date: Date(timeIntervalSince1970: TimeInterval(chart.week.to)),
@@ -500,10 +506,10 @@ private extension ChartRepository {
 
                 var peak = existing.peak
                 var weeksOnPeak = existing.weeksOnPeak
-                if entry.rank < peak {
-                    peak = entry.rank
+                if entry.finalRank < peak {
+                    peak = entry.finalRank
                     weeksOnPeak = 1
-                } else if entry.rank == peak {
+                } else if entry.finalRank == peak {
                     weeksOnPeak += 1
                 }
 
@@ -518,7 +524,7 @@ private extension ChartRepository {
                 snapshotAggregates[id] = ChartEntryAggregateSnapshot(
                     parent: entry,
                     rank: 0,
-                    peak: entry.rank,
+                    peak: entry.finalRank,
                     weeksOnPeak: 1,
                     weeksOnChart: 1,
                     appearances: [entry])
@@ -644,7 +650,7 @@ extension ChartRepository {
                 streams: units.streamsEquivalent,
                 sales: units.sales,
                 totalUnits: units.total,
-                position: entry.rank,
+                position: entry.finalRank,
                 week: entry.week)
         }
 

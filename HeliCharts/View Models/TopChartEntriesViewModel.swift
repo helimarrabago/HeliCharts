@@ -68,7 +68,8 @@ final class TopChartEntriesViewModel: TopChartEntriesViewModelProtocol {
         let sortedCharts = mappedCharts.sorted { $0.week.from > $1.week.from }
 
         TrackChartRepository.allCharts.send(sortedCharts)
-        topTracks = sortedCharts.map { TopChartEntryUIModel(chart: $0) }
+        let rankedCharts = getChartsWithRankedEntries(in: TrackChartRepository.self)
+        topTracks = rankedCharts.map { TopChartEntryUIModel(chart: $0) }
 
         return topTracks
     }
@@ -98,7 +99,8 @@ final class TopChartEntriesViewModel: TopChartEntriesViewModelProtocol {
         let sortedCharts = mappedCharts.sorted { return $0.week.from > $1.week.from }
 
         AlbumChartRepository.allCharts.send(sortedCharts)
-        topAlbums = sortedCharts.map { TopChartEntryUIModel(chart: $0) }
+        let rankedCharts = getChartsWithRankedEntries(in: AlbumChartRepository.self)
+        topAlbums = rankedCharts.map { TopChartEntryUIModel(chart: $0) }
 
         return topAlbums
     }
@@ -128,7 +130,8 @@ final class TopChartEntriesViewModel: TopChartEntriesViewModelProtocol {
         let sortedCharts = mappedCharts.sorted { $0.week.from > $1.week.from }
 
         ArtistChartRepository.allCharts.send(sortedCharts)
-        topArtists = sortedCharts.map { TopChartEntryUIModel(chart: $0) }
+        let rankedCharts = getChartsWithRankedEntries(in: ArtistChartRepository.self)
+        topArtists = rankedCharts.map { TopChartEntryUIModel(chart: $0) }
 
         return topArtists
     }
@@ -179,5 +182,38 @@ private extension TopChartEntriesViewModel {
         let (data, _) = try await URLSession.shared.data(from: url)
         let response = try JSONDecoder().decode(ArtistChartResponse.self, from: data)
         return response
+    }
+
+    func getChartsWithRankedEntries<Repository: ChartRepository>(
+        in repository: Repository.Type
+    ) -> [Repository.ChartType] {
+        var rankedCharts: [Repository.ChartType] = []
+
+        for chart in repository.allCharts.value {
+            var entriesWithUnits: [Repository.ChartEntryType: Int] = [:]
+            for entry in chart.entries {
+                let weeks = repository.getWeeksSoFar(of: entry)
+                let units = entry.computeUnits(weeks: weeks)
+                entriesWithUnits[entry] = units.total
+            }
+
+            var rankedEntries = entriesWithUnits.sorted { lhs, rhs in
+                return lhs.value > rhs.value
+            }.map { $0.key }
+
+            for (index, entry) in rankedEntries.enumerated() {
+                var finalEntry = entry
+                finalEntry.setFinalRank(index + 1)
+                rankedEntries[index] = finalEntry
+            }
+
+            var finalChart = chart
+            finalChart.updateEntries(to: rankedEntries)
+
+            rankedCharts.append(finalChart)
+        }
+
+        repository.allCharts.send(rankedCharts)
+        return rankedCharts
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 struct ArtistChart: Chart {
     typealias EntryType = ArtistEntry
 
-    let entries: [ArtistEntry]
+    var entries: [ArtistEntry]
     let week: WeekRange
     let kind: ChartKind = .artist
 
@@ -46,7 +46,7 @@ extension ArtistChart: Hashable {
 
 extension ArtistChart {
     func getTopEntry() -> ArtistEntry? {
-        let topArtist = entries.first(where: { $0.rank == 1 })
+        let topArtist = entries.first(where: { $0.finalRank == 1 })
         return topArtist
     }
 
