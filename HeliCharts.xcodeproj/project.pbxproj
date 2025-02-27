@@ -137,18 +137,18 @@
 		BA5F03072D40EADD008AF417 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = BA5F02C92D40EADD008AF417 /* DequeModule */; };
 		BA5F03092D40EADD008AF417 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA9399052D2D604700362719 /* Preview Assets.xcassets */; };
 		BA5F030A2D40EADD008AF417 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA9399022D2D604700362719 /* Assets.xcassets */; };
-		BA6007562D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */; };
-		BA6007572D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */; };
-		BA6007582D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */; };
+		BA6007562D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */; };
+		BA6007572D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */; };
+		BA6007582D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */; };
 		BA60075B2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
 		BA60075C2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
 		BA60075D2D51021F00EF47FE /* CacheKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA60075A2D51021F00EF47FE /* CacheKeys.swift */; };
-		BA62D02D2D578482002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */; };
-		BA62D02E2D578483002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */; };
+		BA62D02D2D578482002FF68B /* WeeklyRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */; };
+		BA62D02E2D578483002FF68B /* WeeklyRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */; };
 		BA62D02F2D57849F002FF68B /* RecordsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */; };
 		BA62D0302D5784A0002FF68B /* RecordsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */; };
-		BA62D0312D5784D7002FF68B /* MostWeeklyUnitsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */; };
-		BA62D0322D5784D8002FF68B /* MostWeeklyUnitsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */; };
+		BA62D0312D5784D7002FF68B /* WeeklyRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */; };
+		BA62D0322D5784D8002FF68B /* WeeklyRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */; };
 		BA67D1C92D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CA2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CB2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
@@ -169,8 +169,8 @@
 		BA9399122D2E1FE600362719 /* TrackChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9399112D2E1FE600362719 /* TrackChart.swift */; };
 		BA9399142D2E200400362719 /* TrackEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA9399132D2E200400362719 /* TrackEntry.swift */; };
 		BA97B3CB2D4F69BF004829E7 /* RecordsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */; };
-		BA97B3CD2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */; };
-		BA97B3D02D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */; };
+		BA97B3CD2D4F6A76004829E7 /* WeeklyRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */; };
+		BA97B3D02D4F9C64004829E7 /* WeeklyRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */; };
 		BAA0AD3E2D410380004BB4BE /* ChartEntryDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA0AD3D2D410380004BB4BE /* ChartEntryDetailCell.swift */; };
 		BAAC9BFC2D3E7B3A00629A36 /* AlbumResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAC9BFB2D3E7B3A00629A36 /* AlbumResponse.swift */; };
 		BAAC9BFE2D3E7CC100629A36 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAC9BFD2D3E7CC100629A36 /* Album.swift */; };
@@ -223,7 +223,7 @@
 		BA5BA9902D3FD0A5002859BD /* AllTimeChartEntryUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTimeChartEntryUIModel.swift; sourceTree = "<group>"; };
 		BA5F02C42D40EA8B008AF417 /* RalphCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RalphCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA5F030E2D40EADD008AF417 /* CLCharts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CLCharts.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostWeeklyUnitsViewModel.swift; sourceTree = "<group>"; };
+		BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRecordViewModel.swift; sourceTree = "<group>"; };
 		BA60075A2D51021F00EF47FE /* CacheKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheKeys.swift; sourceTree = "<group>"; };
 		BA67D1C82D4DD62900642984 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		BA76E4392D35466800D03DFA /* TopChartEntriesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopChartEntriesScreen.swift; sourceTree = "<group>"; };
@@ -242,8 +242,8 @@
 		BA9399112D2E1FE600362719 /* TrackChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackChart.swift; sourceTree = "<group>"; };
 		BA9399132D2E200400362719 /* TrackEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEntry.swift; sourceTree = "<group>"; };
 		BA97B3CA2D4F69BF004829E7 /* RecordsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsScreen.swift; sourceTree = "<group>"; };
-		BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostWeeklyUnitsScreen.swift; sourceTree = "<group>"; };
-		BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostWeeklyUnitsUIModel.swift; sourceTree = "<group>"; };
+		BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRecordScreen.swift; sourceTree = "<group>"; };
+		BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRecordUIModel.swift; sourceTree = "<group>"; };
 		BAA0AD3D2D410380004BB4BE /* ChartEntryDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartEntryDetailCell.swift; sourceTree = "<group>"; };
 		BAAC9BFB2D3E7B3A00629A36 /* AlbumResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumResponse.swift; sourceTree = "<group>"; };
 		BAAC9BFD2D3E7CC100629A36 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
@@ -321,7 +321,7 @@
 		BA0654472D52F2F500C9B8BB /* Records */ = {
 			isa = PBXGroup;
 			children = (
-				BA6007552D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift */,
+				BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */,
 			);
 			path = Records;
 			sourceTree = "<group>";
@@ -437,7 +437,7 @@
 		BA97B3CE2D4F9C0A004829E7 /* Records */ = {
 			isa = PBXGroup;
 			children = (
-				BA97B3CC2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift */,
+				BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */,
 			);
 			path = Records;
 			sourceTree = "<group>";
@@ -475,7 +475,7 @@
 				BAFC4E632D3BE97A00BC5B73 /* ChildChartEntryUIModel.swift */,
 				BA76E4442D35592400D03DFA /* YearEndChartEntryUIModel.swift */,
 				BA5BA9902D3FD0A5002859BD /* AllTimeChartEntryUIModel.swift */,
-				BA97B3CF2D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift */,
+				BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */,
 			);
 			path = "UI Models";
 			sourceTree = "<group>";
@@ -672,7 +672,7 @@
 				BA5F028B2D40EA8B008AF417 /* ChartRunSnapshotUIModel.swift in Sources */,
 				BA5F028C2D40EA8B008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F028D2D40EA8B008AF417 /* TrackChart.swift in Sources */,
-				BA62D02D2D578482002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */,
+				BA62D02D2D578482002FF68B /* WeeklyRecordUIModel.swift in Sources */,
 				BA5F028E2D40EA8B008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F028F2D40EA8B008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02902D40EA8B008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -707,14 +707,14 @@
 				BA5F02AC2D40EA8B008AF417 /* UserRepository.swift in Sources */,
 				BA5F02AD2D40EA8B008AF417 /* AlbumEntry.swift in Sources */,
 				BA5F02AE2D40EA8B008AF417 /* UserResponse.swift in Sources */,
-				BA6007572D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */,
+				BA6007572D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
 				BA5F02AF2D40EA8B008AF417 /* AllTimeChartEntryUIModel.swift in Sources */,
 				BA8AD61A2D478FCE00902FF1 /* ChartEntryDetailCell.swift in Sources */,
 				BA5F02B02D40EA8B008AF417 /* Artist.swift in Sources */,
 				BA67D1CA2D4DD62900642984 /* Credentials.swift in Sources */,
 				BA5F02B12D40EA8B008AF417 /* ChartEntryDetailsViewModel.swift in Sources */,
 				BA5F02B22D40EA8B008AF417 /* AlbumChartResponse.swift in Sources */,
-				BA62D0312D5784D7002FF68B /* MostWeeklyUnitsScreen.swift in Sources */,
+				BA62D0312D5784D7002FF68B /* WeeklyRecordScreen.swift in Sources */,
 				BA5F02B32D40EA8B008AF417 /* ChartViewModel.swift in Sources */,
 				BA5F02B42D40EA8B008AF417 /* Settings.swift in Sources */,
 				BA60075C2D51021F00EF47FE /* CacheKeys.swift in Sources */,
@@ -739,7 +739,7 @@
 				BA5F02D52D40EADD008AF417 /* ChartRunSnapshotUIModel.swift in Sources */,
 				BA5F02D62D40EADD008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F02D72D40EADD008AF417 /* TrackChart.swift in Sources */,
-				BA62D02E2D578483002FF68B /* MostWeeklyUnitsUIModel.swift in Sources */,
+				BA62D02E2D578483002FF68B /* WeeklyRecordUIModel.swift in Sources */,
 				BA5F02D82D40EADD008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F02D92D40EADD008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02DA2D40EADD008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -774,14 +774,14 @@
 				BA5F02F62D40EADD008AF417 /* UserRepository.swift in Sources */,
 				BA5F02F72D40EADD008AF417 /* AlbumEntry.swift in Sources */,
 				BA5F02F82D40EADD008AF417 /* UserResponse.swift in Sources */,
-				BA6007582D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */,
+				BA6007582D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
 				BA5F02F92D40EADD008AF417 /* AllTimeChartEntryUIModel.swift in Sources */,
 				BA8AD61B2D478FCE00902FF1 /* ChartEntryDetailCell.swift in Sources */,
 				BA5F02FA2D40EADD008AF417 /* Artist.swift in Sources */,
 				BA67D1CB2D4DD62900642984 /* Credentials.swift in Sources */,
 				BA5F02FB2D40EADD008AF417 /* ChartEntryDetailsViewModel.swift in Sources */,
 				BA5F02FC2D40EADD008AF417 /* AlbumChartResponse.swift in Sources */,
-				BA62D0322D5784D8002FF68B /* MostWeeklyUnitsScreen.swift in Sources */,
+				BA62D0322D5784D8002FF68B /* WeeklyRecordScreen.swift in Sources */,
 				BA5F02FD2D40EADD008AF417 /* ChartViewModel.swift in Sources */,
 				BA5F02FE2D40EADD008AF417 /* Settings.swift in Sources */,
 				BA60075D2D51021F00EF47FE /* CacheKeys.swift in Sources */,
@@ -824,7 +824,7 @@
 				BAAC9C022D3E7E6D00629A36 /* AlbumRepository.swift in Sources */,
 				BAAC9BFE2D3E7CC100629A36 /* Album.swift in Sources */,
 				BAEE20862D32808B00551EA7 /* ChartEntry.swift in Sources */,
-				BA97B3CD2D4F6A76004829E7 /* MostWeeklyUnitsScreen.swift in Sources */,
+				BA97B3CD2D4F6A76004829E7 /* WeeklyRecordScreen.swift in Sources */,
 				BAFC4E642D3BE97A00BC5B73 /* ChildChartEntryUIModel.swift in Sources */,
 				BAEE20842D32807F00551EA7 /* Chart.swift in Sources */,
 				BA76E4432D3558EF00D03DFA /* YearEndChartsViewModel.swift in Sources */,
@@ -832,7 +832,7 @@
 				BA9398FD2D2D604500362719 /* HeliChartsApp.swift in Sources */,
 				BA93990F2D2E1F7400362719 /* Helpers.swift in Sources */,
 				BAEE20822D32801B00551EA7 /* ChartEntryDetailsDisplayModel.swift in Sources */,
-				BA97B3D02D4F9C64004829E7 /* MostWeeklyUnitsUIModel.swift in Sources */,
+				BA97B3D02D4F9C64004829E7 /* WeeklyRecordUIModel.swift in Sources */,
 				BADAF4352D2ECF2D002B2ECC /* ArtistEntry.swift in Sources */,
 				BA1707E82D2FF2E20036292F /* TrackChartResponse.swift in Sources */,
 				BAAC9C002D3E7CD200629A36 /* Track.swift in Sources */,
@@ -851,7 +851,7 @@
 				BADAF42F2D2EC4EA002B2ECC /* AlbumChartResponse.swift in Sources */,
 				BA1707E62D2FE5940036292F /* ChartViewModel.swift in Sources */,
 				BAEE206E2D325FEC00551EA7 /* Settings.swift in Sources */,
-				BA6007562D50F93700EF47FE /* MostWeeklyUnitsViewModel.swift in Sources */,
+				BA6007562D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
 				BAEE207A2D327FB200551EA7 /* TopChartEntryUIModel.swift in Sources */,
 				BAEE20902D32827C00551EA7 /* ArtistChartRepository.swift in Sources */,
 				BA253E972D2FF629003121ED /* AlbumChart.swift in Sources */,

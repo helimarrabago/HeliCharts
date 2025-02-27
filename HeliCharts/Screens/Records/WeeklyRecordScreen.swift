@@ -1,5 +1,5 @@
 //
-//  MostWeeklyUnitsScreen.swift
+//  WeeklyRecordScreen.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 2/2/25.
@@ -7,13 +7,15 @@
 
 import SwiftUI
 
-struct MostWeeklyUnitsScreen<ViewModel: MostWeeklyUnitsViewModelProtocol>: View {
+struct WeeklyRecordScreen<ViewModel: WeeklyRecordViewModelProtocol>: View {
+    let recordType: WeeklyRecordType
+
     @ObservedObject var viewModel: ViewModel
     @State private var chartMetric: ChartMetric = .totalUnits
     @State private var chartKind: ChartKind = .track
-    @State private var tracks: [MostWeeklyUnitsUIModel] = []
-    @State private var albums: [MostWeeklyUnitsUIModel] = []
-    @State private var artists: [MostWeeklyUnitsUIModel] = []
+    @State private var tracks: [WeeklyRecordUIModel] = []
+    @State private var albums: [WeeklyRecordUIModel] = []
+    @State private var artists: [WeeklyRecordUIModel] = []
     @State private var loading = true
 
     var body: some View {
@@ -39,7 +41,7 @@ struct MostWeeklyUnitsScreen<ViewModel: MostWeeklyUnitsViewModelProtocol>: View 
                 .listStyle(.plain)
             }
         }
-        .navigationTitle("Most units in a single week")
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .task {
             guard loading else { return }
@@ -63,17 +65,17 @@ struct MostWeeklyUnitsScreen<ViewModel: MostWeeklyUnitsViewModelProtocol>: View 
     private func getMostWeeklyUnits() async {
         switch chartKind {
         case .track:
-            let tracks = await viewModel.fetchMostWeeklyTrackUnits(metric: chartMetric)
+            let tracks = await viewModel.fetchWeeklyTrackRecord(type: recordType, metric: chartMetric)
             withAnimation {
                 self.tracks = tracks
             }
         case .album:
-            let albums = await viewModel.fetchMostWeeklyAlbumUnits(metric: chartMetric)
+            let albums = await viewModel.fetchWeeklyAlbumRecord(type: recordType, metric: chartMetric)
             withAnimation {
                 self.albums = albums
             }
         case .artist:
-            let artists = await viewModel.fetchMostWeeklyArtistUnits(metric: chartMetric)
+            let artists = await viewModel.fetchWeeklyArtistRecord(type: recordType, metric: chartMetric)
             withAnimation {
                 self.artists = artists
             }
@@ -81,7 +83,16 @@ struct MostWeeklyUnitsScreen<ViewModel: MostWeeklyUnitsViewModelProtocol>: View 
     }
 }
 
-private extension MostWeeklyUnitsScreen {
+private extension WeeklyRecordScreen {
+    var navigationTitle: String {
+        switch recordType {
+        case .mostWeeklyUnits:
+            return "Most units in a single week"
+        case .biggestDebuts:
+            return "Biggest debuts"
+        }
+    }
+
     var chartMetricPicker: some View {
         HStack(spacing: 0) {
             Text("Metric:")
@@ -105,7 +116,7 @@ private extension MostWeeklyUnitsScreen {
         .pickerStyle(.segmented)
     }
 
-    func chartList(for entries: [MostWeeklyUnitsUIModel]) -> some View {
+    func chartList(for entries: [WeeklyRecordUIModel]) -> some View {
         ForEach(entries) { entry in
             HStack(alignment: .top) {
                 Text(entry.rank)
@@ -151,10 +162,10 @@ private extension MostWeeklyUnitsScreen {
 }
 
 #Preview {
-    final class MockViewModel: MostWeeklyUnitsViewModelProtocol {
-        func fetchMostWeeklyTrackUnits(metric: ChartMetric) async -> [MostWeeklyUnitsUIModel] {
+    final class MockViewModel: WeeklyRecordViewModelProtocol {
+        func fetchWeeklyTrackRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
             return [
-                MostWeeklyUnitsUIModel(
+                WeeklyRecordUIModel(
                     name: "Beyoncé - Formation",
                     rank: "1",
                     streams: "100,000,000",
@@ -165,9 +176,9 @@ private extension MostWeeklyUnitsScreen {
             ]
         }
 
-        func fetchMostWeeklyAlbumUnits(metric: ChartMetric) async -> [MostWeeklyUnitsUIModel] {
+        func fetchWeeklyAlbumRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
             return [
-                MostWeeklyUnitsUIModel(
+                WeeklyRecordUIModel(
                     name: "Beyoncé - Lemonade",
                     rank: "1",
                     streams: "100,000,000",
@@ -178,9 +189,9 @@ private extension MostWeeklyUnitsScreen {
             ]
         }
 
-        func fetchMostWeeklyArtistUnits(metric: ChartMetric) async -> [MostWeeklyUnitsUIModel] {
+        func fetchWeeklyArtistRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
             return [
-                MostWeeklyUnitsUIModel(
+                WeeklyRecordUIModel(
                     name: "Beyoncé",
                     rank: "1",
                     streams: "100,000,000",
@@ -193,6 +204,6 @@ private extension MostWeeklyUnitsScreen {
     }
 
     return NavigationView {
-        MostWeeklyUnitsScreen(viewModel: MockViewModel())
+        WeeklyRecordScreen(recordType: .mostWeeklyUnits, viewModel: MockViewModel())
     }
 }

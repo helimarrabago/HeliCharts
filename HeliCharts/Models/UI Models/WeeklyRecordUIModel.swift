@@ -1,5 +1,5 @@
 //
-//  MostWeeklyUnitsUIModel.swift
+//  WeeklyRecordUIModel.swift
 //  HeliCharts
 //
 //  Created by Helimar Rabago on 2/2/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MostWeeklyUnitsUIModel {
+struct WeeklyRecordUIModel {
     let name: String
     let rank: String
     let streams: String
@@ -34,7 +34,7 @@ struct MostWeeklyUnitsUIModel {
         self.week = week
     }
 
-    init(dataModel: MostWeeklyUnits) {
+    init(dataModel: WeeklyRecord) {
         self.name = dataModel.name
         self.rank = String(dataModel.rank)
         self.streams = dataModel.streams.toDecimalFormat()
@@ -45,6 +45,6 @@ struct MostWeeklyUnitsUIModel {
     }
 }
 
-extension MostWeeklyUnitsUIModel: Identifiable {
+extension WeeklyRecordUIModel: Identifiable {
     var id: String { return name + week }
 }

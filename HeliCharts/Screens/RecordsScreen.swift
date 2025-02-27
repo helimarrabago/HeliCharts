@@ -12,12 +12,16 @@ struct RecordsScreen: View {
         NavigationView {
             List {
                 NavigationLink {
-                    MostWeeklyUnitsScreen(viewModel: MostWeeklyUnitsViewModel())
+                    WeeklyRecordScreen(recordType: .mostWeeklyUnits, viewModel: WeeklyRecordViewModel())
                 } label: {
                     Text("Most units in a single week")
                 }
 
-                Text("Longest running #1 entries")
+                NavigationLink {
+                    WeeklyRecordScreen(recordType: .biggestDebuts, viewModel: WeeklyRecordViewModel())
+                } label: {
+                    Text("Biggest debuts")
+                }
             }
             .navigationTitle("Records")
         }

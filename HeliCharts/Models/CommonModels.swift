@@ -192,7 +192,12 @@ struct ChartEntryUnits<ChartEntryType: ChartEntry> {
     var total: Int { return Int(rawStreams + rawSales) }
 }
 
-struct MostWeeklyUnits {
+enum WeeklyRecordType {
+    case mostWeeklyUnits
+    case biggestDebuts
+}
+
+struct WeeklyRecord {
     let name: String
     let rank: Int
     let streams: Int

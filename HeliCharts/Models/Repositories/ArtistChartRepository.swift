@@ -17,5 +17,6 @@ struct ArtistChartRepository: ChartRepository {
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] = [:]
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] = [:]
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] = [:]
-    static var mostWeeklyUnitsCache: [MetricKey: [MostWeeklyUnits]] = [:]
+    static var mostWeeklyUnitsCache: [MetricKey: [WeeklyRecord]] = [:]
+    static var biggestDebutsCache: [MetricKey: [WeeklyRecord]] = [:]
 }
