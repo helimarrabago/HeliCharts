@@ -22,6 +22,12 @@ struct RecordsScreen: View {
                 } label: {
                     Text("Biggest debuts")
                 }
+
+                NavigationLink {
+                    WeeklyRecordScreen(recordType: .biggestPeaks, viewModel: WeeklyRecordViewModel())
+                } label: {
+                    Text("Biggest peaks")
+                }
             }
             .navigationTitle("Records")
         }

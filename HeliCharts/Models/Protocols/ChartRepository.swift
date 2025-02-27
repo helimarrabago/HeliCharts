@@ -23,6 +23,7 @@ protocol ChartRepository {
     static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] { get set }
     static var mostWeeklyUnitsCache: [MetricKey: [WeeklyRecord]] { get set }
     static var biggestDebutsCache: [MetricKey: [WeeklyRecord]] { get set }
+    static var biggestPeaksCache: [MetricKey: [WeeklyRecord]] { get set }
 }
 
 // MARK: - Entry-specific Methods
@@ -623,22 +624,24 @@ extension ChartRepository {
             return cache
         }
 
-        var sortedEntries = allCharts.value.flatMap { $0.entries }.sorted { lhs, rhs in
-            let lhsWeeks = getWeeksSoFar(of: lhs)
-            let lhsUnits = lhs.computeUnits(weeks: lhsWeeks)
+        var sortedEntries = allCharts.value
+            .flatMap { $0.entries.prefix(20) }
+            .sorted { lhs, rhs in
+                let lhsWeeks = getAppearancesSoFar(of: lhs).count
+                let lhsUnits = lhs.computeUnits(weeks: lhsWeeks)
 
-            let rhsWeeks = getWeeksSoFar(of: rhs)
-            let rhsUnits = rhs.computeUnits(weeks: rhsWeeks)
+                let rhsWeeks = getAppearancesSoFar(of: rhs).count
+                let rhsUnits = rhs.computeUnits(weeks: rhsWeeks)
 
-            switch metric {
-            case .totalUnits:
-                return lhsUnits.total > rhsUnits.total
-            case .streams:
-                return lhsUnits.streams > rhsUnits.streams
-            case .sales:
-                return lhsUnits.sales > rhsUnits.sales
+                switch metric {
+                case .totalUnits:
+                    return lhsUnits.total > rhsUnits.total
+                case .streams:
+                    return lhsUnits.streams > rhsUnits.streams
+                case .sales:
+                    return lhsUnits.sales > rhsUnits.sales
+                }
             }
-        }
         sortedEntries = Array(sortedEntries.prefix(20))
 
         let mostWeeklyUnits = sortedEntries.enumerated().map { index, entry in
@@ -665,7 +668,8 @@ extension ChartRepository {
             return cache
         }
 
-        var sortedEntries = allCharts.value.flatMap { $0.entries }
+        var sortedEntries = allCharts.value
+            .flatMap { $0.entries.prefix(20) }
             .filter { getWeeksSoFar(of: $0) == 1 }
             .sorted { lhs, rhs in
                 let lhsUnits = lhs.computeUnits(weeks: 1)
@@ -696,6 +700,53 @@ extension ChartRepository {
 
         biggestDebutsCache[id] = biggestDebuts
         return biggestDebuts
+    }
+
+    static func generateBiggestPeaksRecord(metric: ChartMetric) -> [WeeklyRecord] {
+        let id = MetricKey(metric: metric)
+        if let cache = biggestPeaksCache[id] {
+            return cache
+        }
+
+        let sortedEntries = allCharts.value
+            .flatMap { $0.entries.prefix(20) }
+            .sorted { lhs, rhs in
+                let lhsWeeks = getAppearancesSoFar(of: lhs).count
+                let lhsUnits = lhs.computeUnits(weeks: lhsWeeks)
+
+                let rhsWeeks = getAppearancesSoFar(of: rhs).count
+                let rhsUnits = rhs.computeUnits(weeks: rhsWeeks)
+
+                switch metric {
+                case .totalUnits:
+                    return lhsUnits.total > rhsUnits.total
+                case .streams:
+                    return lhsUnits.streams > rhsUnits.streams
+                case .sales:
+                    return lhsUnits.sales > rhsUnits.sales
+                }
+            }
+
+        var seen: Set<ChartEntryType> = []
+        var filteredEntries = sortedEntries.filter { seen.insert($0).inserted }
+        filteredEntries = Array(filteredEntries.prefix(20))
+
+        let biggestPeaks = filteredEntries.enumerated().map { index, entry in
+            let weeks = getWeeksSoFar(of: entry)
+            let units = entry.computeUnits(weeks: weeks)
+
+            return WeeklyRecord(
+                name: [entry.artist?.name, entry.name].compactMap { $0 }.joined(separator: " - "),
+                rank: index + 1,
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
+                position: entry.finalRank,
+                week: entry.week)
+        }
+
+        biggestPeaksCache[id] = biggestPeaks
+        return biggestPeaks
     }
 }
 

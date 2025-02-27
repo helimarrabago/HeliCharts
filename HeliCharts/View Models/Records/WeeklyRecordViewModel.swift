@@ -21,6 +21,8 @@ final class WeeklyRecordViewModel: WeeklyRecordViewModelProtocol {
             weeklyRecords = TrackChartRepository.generateMostWeeklyUnitsRecord(metric: metric)
         case .biggestDebuts:
             weeklyRecords = TrackChartRepository.generateBiggestDebutsRecord(metric: metric)
+        case .biggestPeaks:
+            weeklyRecords = TrackChartRepository.generateBiggestPeaksRecord(metric: metric)
         }
 
         return weeklyRecords.map { WeeklyRecordUIModel(dataModel: $0) }
@@ -33,6 +35,8 @@ final class WeeklyRecordViewModel: WeeklyRecordViewModelProtocol {
             weeklyRecords = AlbumChartRepository.generateMostWeeklyUnitsRecord(metric: metric)
         case .biggestDebuts:
             weeklyRecords = AlbumChartRepository.generateBiggestDebutsRecord(metric: metric)
+        case .biggestPeaks:
+            weeklyRecords = AlbumChartRepository.generateBiggestPeaksRecord(metric: metric)
         }
 
         return weeklyRecords.map { WeeklyRecordUIModel(dataModel: $0) }
@@ -45,6 +49,8 @@ final class WeeklyRecordViewModel: WeeklyRecordViewModelProtocol {
             weeklyRecords = ArtistChartRepository.generateMostWeeklyUnitsRecord(metric: metric)
         case .biggestDebuts:
             weeklyRecords = ArtistChartRepository.generateBiggestDebutsRecord(metric: metric)
+        case .biggestPeaks:
+            weeklyRecords = ArtistChartRepository.generateBiggestPeaksRecord(metric: metric)
         }
 
         return weeklyRecords.map { WeeklyRecordUIModel(dataModel: $0) }

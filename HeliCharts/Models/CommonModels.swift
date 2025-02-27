@@ -195,6 +195,7 @@ struct ChartEntryUnits<ChartEntryType: ChartEntry> {
 enum WeeklyRecordType {
     case mostWeeklyUnits
     case biggestDebuts
+    case biggestPeaks
 }
 
 struct WeeklyRecord {
