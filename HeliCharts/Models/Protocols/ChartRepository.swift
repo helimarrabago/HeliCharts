@@ -655,7 +655,8 @@ extension ChartRepository {
                 sales: units.sales,
                 totalUnits: units.total,
                 position: entry.finalRank,
-                week: entry.week)
+                week: entry.week,
+                weekNumber: weeks)
         }
 
         mostWeeklyUnitsCache[id] = mostWeeklyUnits
@@ -695,7 +696,8 @@ extension ChartRepository {
                 sales: units.sales,
                 totalUnits: units.total,
                 position: entry.finalRank,
-                week: entry.week)
+                week: entry.week,
+                weekNumber: nil)
         }
 
         biggestDebutsCache[id] = biggestDebuts
@@ -742,7 +744,8 @@ extension ChartRepository {
                 sales: units.sales,
                 totalUnits: units.total,
                 position: entry.finalRank,
-                week: entry.week)
+                week: entry.week,
+                weekNumber: weeks)
         }
 
         biggestPeaksCache[id] = biggestPeaks

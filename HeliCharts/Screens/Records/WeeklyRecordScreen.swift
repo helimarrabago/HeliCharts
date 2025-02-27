@@ -136,7 +136,7 @@ private extension WeeklyRecordScreen {
                                 .font(.caption)
                                 .foregroundStyle(Color.secondary)
 
-                            Text("Week: " + entry.week)
+                            Text("Chart: " + entry.week)
                                 .font(.caption)
                                 .foregroundStyle(Color.secondary)
                         }

@@ -206,4 +206,5 @@ struct WeeklyRecord {
     let totalUnits: Int
     let position: Int
     let week: WeekRange
+    let weekNumber: Int?
 }

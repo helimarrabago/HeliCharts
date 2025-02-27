@@ -72,10 +72,14 @@ extension Date {
 
 extension WeekRange {
     func toLongFormat() -> String {
-        let format = "MMM d, yyyy"
-        let fromDate = Date(timeIntervalSince1970: TimeInterval(from)).toFormat(format)
-        let toDate = Date(timeIntervalSince1970: TimeInterval(to)).toFormat(format)
-        return fromDate + " to " + toDate
+        let fromDate = Date(timeIntervalSince1970: TimeInterval(from))
+        let toDate = Date(timeIntervalSince1970: TimeInterval(to))
+
+        let fromString = fromDate.toFormat("MMM d")
+        let toString = toDate.toFormat("d")
+        let yearString = toDate.toFormat("yyyy")
+
+        return "\(fromString)-\(toString), \(yearString)"
     }
 
     func isImmediatelyBefore(week: WeekRange) -> Bool {
@@ -113,5 +117,11 @@ extension Int {
 
         let formattedValue = String(format: value.truncatingRemainder(dividingBy: 1) == 0 ? "%.0f" : "%.1f", value)
         return "\(formattedValue) \(suffixes[index])"
+    }
+
+    func toOrdinalFormat() -> String {
+        let formatter = NumberHelper.formatter
+        formatter.numberStyle = .ordinal
+        return formatter.string(from: NSNumber(value: self))!
     }
 }

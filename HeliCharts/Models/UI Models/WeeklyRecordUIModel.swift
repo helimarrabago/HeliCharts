@@ -41,7 +41,12 @@ struct WeeklyRecordUIModel {
         self.sales = dataModel.sales.toDecimalFormat()
         self.totalUnits = dataModel.totalUnits.toDecimalFormat()
         self.position = String(dataModel.position)
-        self.week = dataModel.week.toLongFormat()
+
+        var week = dataModel.week.toLongFormat()
+        if let weekNumber = dataModel.weekNumber {
+            week += " (\(weekNumber.toOrdinalFormat()) week)"
+        }
+        self.week = week
     }
 }
 
