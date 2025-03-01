@@ -20,7 +20,7 @@ protocol ChartRepository {
     static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] { get set }
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] { get set }
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] { get set }
-    static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] { get set }
+    static var allTimeChartCache: [MetricAndLimitKey: [AllTimeChartEntry]] { get set }
     static var mostWeeklyUnitsCache: [MetricKey: [WeeklyRecord]] { get set }
     static var biggestDebutsCache: [MetricKey: [WeeklyRecord]] { get set }
     static var biggestPeaksCache: [MetricKey: [WeeklyRecord]] { get set }
@@ -465,13 +465,19 @@ extension ChartRepository {
         return topEntries
     }
 
-    static func generateAllTimeChart(metric: ChartMetric) -> [AllTimeChartEntry] {
-        if let cache = allTimeChartCache[metric] {
+    static func generateAllTimeChart(metric: ChartMetric, artistLimit: Int? = nil) -> [AllTimeChartEntry] {
+        let key = MetricAndLimitKey(metric: metric, artistLimit: artistLimit)
+        if let cache = allTimeChartCache[key] {
             return cache
         }
 
         let entries = allCharts.value.flatMap { $0.entries }
-        let aggregates = aggregateEntries(entries, by: metric, year: nil, limit: 200)
+        let aggregates = aggregateEntries(
+            entries,
+            by: metric,
+            year: nil,
+            limit: 200,
+            artistLimit: artistLimit)
         let topEntries = aggregates.map { aggregate in
             return AllTimeChartEntry(
                 id: aggregate.parent.id,
@@ -480,7 +486,7 @@ extension ChartRepository {
                 aggregate: aggregate)
         }
 
-        allTimeChartCache[metric] = topEntries
+        allTimeChartCache[key] = topEntries
         return topEntries
     }
 }
@@ -496,7 +502,8 @@ private extension ChartRepository {
         _ entries: [ChartEntryType],
         by metric: ChartMetric,
         year: Int? = nil,
-        limit: Int? = nil
+        limit: Int? = nil,
+        artistLimit: Int? = nil
     ) -> [ChartEntryAggregate] {
         var snapshotAggregates: [String: ChartEntryAggregateSnapshot<ChartEntryType>] = [:]
 
@@ -551,7 +558,15 @@ private extension ChartRepository {
         }
 
         var sortedAggregates = sortAggregates(rawAggregates, metric: metric)
-        if let limit = limit {
+        if let artistLimit {
+            var counts: [String: Int] = [:]
+            sortedAggregates = sortedAggregates.filter { element in
+                let id = element.value.parent.artist!.name
+                counts[id, default: 0] += 1
+                return counts[id]! <= artistLimit
+            }
+        }
+        if let limit {
             sortedAggregates = Array(sortedAggregates.prefix(limit))
         }
 

@@ -16,7 +16,7 @@ struct AlbumChartRepository: ChartRepository {
     static var snapshotHistoryCache: [WeekKey<ChartEntryType>: ChartEntrySnapshotHistory] = [:]
     static var overallHistoryCache: [YearKey<ChartEntryType>: ChartOverallHistory] = [:]
     static var yearEndChartCache: [YearAndMetricKey: [YearEndChartEntry]] = [:]
-    static var allTimeChartCache: [ChartMetric: [AllTimeChartEntry]] = [:]
+    static var allTimeChartCache: [MetricAndLimitKey: [AllTimeChartEntry]] = [:]
     static var mostWeeklyUnitsCache: [MetricKey: [WeeklyRecord]] = [:]
     static var biggestDebutsCache: [MetricKey: [WeeklyRecord]] = [:]
     static var biggestPeaksCache: [MetricKey: [WeeklyRecord]] = [:]

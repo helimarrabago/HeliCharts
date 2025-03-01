@@ -134,11 +134,9 @@ private extension WeeklyRecordScreen {
                         HStack {
                             Text("Position: #" + entry.position)
                                 .font(.caption)
-                                .foregroundStyle(Color.secondary)
 
                             Text("Chart: " + entry.week)
                                 .font(.caption)
-                                .foregroundStyle(Color.secondary)
                         }
                     }
 

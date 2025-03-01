@@ -11,15 +11,31 @@ struct AllTimeChartsScreen<ViewModel: AllTimeChartsViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
     @State private var loading = true
     @State private var chartMetric: ChartMetric = .totalUnits
+    @State private var artistLimit: Int?
     @State private var chartKind: ChartKind = .track
     @State private var tracks: [AllTimeChartEntryUIModel] = []
     @State private var albums: [AllTimeChartEntryUIModel] = []
     @State private var artists: [AllTimeChartEntryUIModel] = []
 
+    @FocusState private var isArtistLimitFocused: Bool
+    @State private var artistLimitFormatter: NumberFormatter = {
+        var formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        return formatter
+    }()
+
     var body: some View {
         NavigationView {
             contentView
                 .navigationTitle("All-time charts")
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    isArtistLimitFocused = false
+                }
+             }
         }
         .task {
             guard loading else { return }
@@ -43,12 +59,12 @@ struct AllTimeChartsScreen<ViewModel: AllTimeChartsViewModelProtocol>: View {
     private func generateAllTimeChart() async {
         switch chartKind {
         case .track:
-            let tracks = await viewModel.generateAllTimeTrackChart(metric: chartMetric)
+            let tracks = await viewModel.generateAllTimeTrackChart(metric: chartMetric, artistLimit: artistLimit)
             withAnimation {
                 self.tracks = tracks
             }
         case .album:
-            let albums = await viewModel.generateAllTimeAlbumChart(metric: chartMetric)
+            let albums = await viewModel.generateAllTimeAlbumChart(metric: chartMetric, artistLimit: artistLimit)
             withAnimation {
                 self.albums = albums
             }
@@ -76,7 +92,10 @@ private extension AllTimeChartsScreen {
                     }
                 } header: {
                     VStack(alignment: .leading, spacing: 2) {
-                        chartMetricPicker
+                        HStack {
+                            chartMetricPicker
+                            artistLimitTextField
+                        }
                         chartKindPicker
                     }
                     .padding(.bottom, 4)
@@ -97,6 +116,21 @@ private extension AllTimeChartsScreen {
                     Text(metric.name)
                 }
             }
+        }
+    }
+
+    var artistLimitTextField: some View {
+        HStack {
+            Text("Artist limit:")
+                .font(.callout)
+                .fontWeight(.semibold)
+
+            TextField("—", value: $artistLimit, formatter: artistLimitFormatter) {
+                Task {
+                    await generateAllTimeChart()
+                }
+            }
+            .focused($isArtistLimitFocused)
         }
     }
 
@@ -122,7 +156,7 @@ private extension AllTimeChartsScreen {
 
 #Preview {
     final class MockViewModel: AllTimeChartsViewModelProtocol {
-        func generateAllTimeTrackChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+        func generateAllTimeTrackChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Beyoncé - 6 Inch (feat. The Weeknd)",
@@ -136,7 +170,7 @@ private extension AllTimeChartsScreen {
                 parent: MockChartEntry())]
         }
 
-        func generateAllTimeAlbumChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+        func generateAllTimeAlbumChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Cowboy Carter",

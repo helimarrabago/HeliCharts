@@ -10,15 +10,15 @@ import Foundation
 
 protocol AllTimeChartsViewModelProtocol: ObservableObject {
     init()
-    func generateAllTimeTrackChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel]
-    func generateAllTimeAlbumChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel]
+    func generateAllTimeTrackChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel]
+    func generateAllTimeAlbumChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel]
     func generateAllTimeArtistChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel]
 }
 
 final class AllTimeChartsViewModel: AllTimeChartsViewModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
-    func generateAllTimeTrackChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+    func generateAllTimeTrackChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
         await withCheckedContinuation { continuation in
             TrackChartRepository.allCharts
                 .filter { !$0.isEmpty }
@@ -29,12 +29,12 @@ final class AllTimeChartsViewModel: AllTimeChartsViewModelProtocol {
                 .store(in: &cancellables)
         }
 
-        return TrackChartRepository.generateAllTimeChart(metric: metric).map {
+        return TrackChartRepository.generateAllTimeChart(metric: metric, artistLimit: artistLimit).map {
             AllTimeChartEntryUIModel(entry: $0)
         }
     }
 
-    func generateAllTimeAlbumChart(metric: ChartMetric) async -> [AllTimeChartEntryUIModel] {
+    func generateAllTimeAlbumChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
         await withCheckedContinuation { continuation in
             AlbumChartRepository.allCharts
                 .filter { !$0.isEmpty }
@@ -45,7 +45,7 @@ final class AllTimeChartsViewModel: AllTimeChartsViewModelProtocol {
                 .store(in: &cancellables)
         }
 
-        return AlbumChartRepository.generateAllTimeChart(metric: metric).map {
+        return AlbumChartRepository.generateAllTimeChart(metric: metric, artistLimit: artistLimit).map {
             AllTimeChartEntryUIModel(entry: $0)
         }
     }

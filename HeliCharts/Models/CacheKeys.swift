@@ -25,3 +25,8 @@ struct YearAndMetricKey: Hashable {
     let year: Int
     let metric: ChartMetric
 }
+
+struct MetricAndLimitKey: Hashable {
+    let metric: ChartMetric
+    let artistLimit: Int?
+}
