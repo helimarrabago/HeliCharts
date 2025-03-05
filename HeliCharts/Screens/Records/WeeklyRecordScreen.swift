@@ -89,9 +89,9 @@ private extension WeeklyRecordScreen {
         case .mostWeeklyUnits:
             return "Most units in a single week"
         case .biggestDebuts:
-            return "Biggest debuts"
+            return "Biggest weekly debuts"
         case .biggestPeaks:
-            return "Biggest peaks"
+            return "Biggest weekly peaks"
         }
     }
 

@@ -152,6 +152,15 @@
 		BA67D1C92D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CA2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
 		BA67D1CB2D4DD62900642984 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA67D1C82D4DD62900642984 /* Credentials.swift */; };
+		BA6F11A52D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A42D734B2C00CAD5C6 /* FastestRecordScreen.swift */; };
+		BA6F11A62D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A42D734B2C00CAD5C6 /* FastestRecordScreen.swift */; };
+		BA6F11A72D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A42D734B2C00CAD5C6 /* FastestRecordScreen.swift */; };
+		BA6F11A92D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A82D734BD500CAD5C6 /* FastestRecordViewModel.swift */; };
+		BA6F11AA2D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A82D734BD500CAD5C6 /* FastestRecordViewModel.swift */; };
+		BA6F11AB2D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11A82D734BD500CAD5C6 /* FastestRecordViewModel.swift */; };
+		BA6F11AD2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11AC2D734C5500CAD5C6 /* FastestRecordUIModel.swift */; };
+		BA6F11AE2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11AC2D734C5500CAD5C6 /* FastestRecordUIModel.swift */; };
+		BA6F11AF2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6F11AC2D734C5500CAD5C6 /* FastestRecordUIModel.swift */; };
 		BA76E43A2D35466800D03DFA /* TopChartEntriesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA76E4392D35466800D03DFA /* TopChartEntriesScreen.swift */; };
 		BA76E43C2D3546B700D03DFA /* TopChartEntriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA76E43B2D3546B700D03DFA /* TopChartEntriesViewModel.swift */; };
 		BA76E43F2D35475400D03DFA /* UserRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA76E43E2D35475400D03DFA /* UserRepository.swift */; };
@@ -226,6 +235,9 @@
 		BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyRecordViewModel.swift; sourceTree = "<group>"; };
 		BA60075A2D51021F00EF47FE /* CacheKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheKeys.swift; sourceTree = "<group>"; };
 		BA67D1C82D4DD62900642984 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		BA6F11A42D734B2C00CAD5C6 /* FastestRecordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastestRecordScreen.swift; sourceTree = "<group>"; };
+		BA6F11A82D734BD500CAD5C6 /* FastestRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastestRecordViewModel.swift; sourceTree = "<group>"; };
+		BA6F11AC2D734C5500CAD5C6 /* FastestRecordUIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastestRecordUIModel.swift; sourceTree = "<group>"; };
 		BA76E4392D35466800D03DFA /* TopChartEntriesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopChartEntriesScreen.swift; sourceTree = "<group>"; };
 		BA76E43B2D3546B700D03DFA /* TopChartEntriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopChartEntriesViewModel.swift; sourceTree = "<group>"; };
 		BA76E43E2D35475400D03DFA /* UserRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRepository.swift; sourceTree = "<group>"; };
@@ -322,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				BA6007552D50F93700EF47FE /* WeeklyRecordViewModel.swift */,
+				BA6F11A82D734BD500CAD5C6 /* FastestRecordViewModel.swift */,
 			);
 			path = Records;
 			sourceTree = "<group>";
@@ -438,6 +451,7 @@
 			isa = PBXGroup;
 			children = (
 				BA97B3CC2D4F6A76004829E7 /* WeeklyRecordScreen.swift */,
+				BA6F11A42D734B2C00CAD5C6 /* FastestRecordScreen.swift */,
 			);
 			path = Records;
 			sourceTree = "<group>";
@@ -476,6 +490,7 @@
 				BA76E4442D35592400D03DFA /* YearEndChartEntryUIModel.swift */,
 				BA5BA9902D3FD0A5002859BD /* AllTimeChartEntryUIModel.swift */,
 				BA97B3CF2D4F9C64004829E7 /* WeeklyRecordUIModel.swift */,
+				BA6F11AC2D734C5500CAD5C6 /* FastestRecordUIModel.swift */,
 			);
 			path = "UI Models";
 			sourceTree = "<group>";
@@ -673,6 +688,7 @@
 				BA5F028C2D40EA8B008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F028D2D40EA8B008AF417 /* TrackChart.swift in Sources */,
 				BA62D02D2D578482002FF68B /* WeeklyRecordUIModel.swift in Sources */,
+				BA6F11AE2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */,
 				BA5F028E2D40EA8B008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F028F2D40EA8B008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02902D40EA8B008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -708,6 +724,7 @@
 				BA5F02AD2D40EA8B008AF417 /* AlbumEntry.swift in Sources */,
 				BA5F02AE2D40EA8B008AF417 /* UserResponse.swift in Sources */,
 				BA6007572D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
+				BA6F11A62D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */,
 				BA5F02AF2D40EA8B008AF417 /* AllTimeChartEntryUIModel.swift in Sources */,
 				BA8AD61A2D478FCE00902FF1 /* ChartEntryDetailCell.swift in Sources */,
 				BA5F02B02D40EA8B008AF417 /* Artist.swift in Sources */,
@@ -720,6 +737,7 @@
 				BA60075C2D51021F00EF47FE /* CacheKeys.swift in Sources */,
 				BA5F02B52D40EA8B008AF417 /* TopChartEntryUIModel.swift in Sources */,
 				BA5F02B62D40EA8B008AF417 /* ArtistChartRepository.swift in Sources */,
+				BA6F11AA2D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */,
 				BA5F02B72D40EA8B008AF417 /* AlbumChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -740,6 +758,7 @@
 				BA5F02D62D40EADD008AF417 /* ChartMovementUIModel.swift in Sources */,
 				BA5F02D72D40EADD008AF417 /* TrackChart.swift in Sources */,
 				BA62D02E2D578483002FF68B /* WeeklyRecordUIModel.swift in Sources */,
+				BA6F11AF2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */,
 				BA5F02D82D40EADD008AF417 /* YearEndChartsScreen.swift in Sources */,
 				BA5F02D92D40EADD008AF417 /* ChartPositionUIModel.swift in Sources */,
 				BA5F02DA2D40EADD008AF417 /* AllTimeChartsViewModel.swift in Sources */,
@@ -775,6 +794,7 @@
 				BA5F02F72D40EADD008AF417 /* AlbumEntry.swift in Sources */,
 				BA5F02F82D40EADD008AF417 /* UserResponse.swift in Sources */,
 				BA6007582D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
+				BA6F11A72D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */,
 				BA5F02F92D40EADD008AF417 /* AllTimeChartEntryUIModel.swift in Sources */,
 				BA8AD61B2D478FCE00902FF1 /* ChartEntryDetailCell.swift in Sources */,
 				BA5F02FA2D40EADD008AF417 /* Artist.swift in Sources */,
@@ -787,6 +807,7 @@
 				BA60075D2D51021F00EF47FE /* CacheKeys.swift in Sources */,
 				BA5F02FF2D40EADD008AF417 /* TopChartEntryUIModel.swift in Sources */,
 				BA5F03002D40EADD008AF417 /* ArtistChartRepository.swift in Sources */,
+				BA6F11AB2D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */,
 				BA5F03012D40EADD008AF417 /* AlbumChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -807,6 +828,7 @@
 				BAEE20962D33A5A600551EA7 /* ChartRunSnapshotUIModel.swift in Sources */,
 				BAEE20942D33A58C00551EA7 /* ChartMovementUIModel.swift in Sources */,
 				BA9399122D2E1FE600362719 /* TrackChart.swift in Sources */,
+				BA6F11AD2D734C5500CAD5C6 /* FastestRecordUIModel.swift in Sources */,
 				BA76E4412D3558E400D03DFA /* YearEndChartsScreen.swift in Sources */,
 				BAEE20982D33BE3F00551EA7 /* ChartPositionUIModel.swift in Sources */,
 				BA5BA98F2D3FCE3C002859BD /* AllTimeChartsViewModel.swift in Sources */,
@@ -842,6 +864,7 @@
 				BA76E43F2D35475400D03DFA /* UserRepository.swift in Sources */,
 				BADAF4312D2EC516002B2ECC /* AlbumEntry.swift in Sources */,
 				BA253E9B2D2FFB1A003121ED /* UserResponse.swift in Sources */,
+				BA6F11A52D734B2C00CAD5C6 /* FastestRecordScreen.swift in Sources */,
 				BA5BA9912D3FD0A5002859BD /* AllTimeChartEntryUIModel.swift in Sources */,
 				BAA0AD3E2D410380004BB4BE /* ChartEntryDetailCell.swift in Sources */,
 				BAEE20892D3281D100551EA7 /* Artist.swift in Sources */,
@@ -854,6 +877,7 @@
 				BA6007562D50F93700EF47FE /* WeeklyRecordViewModel.swift in Sources */,
 				BAEE207A2D327FB200551EA7 /* TopChartEntryUIModel.swift in Sources */,
 				BAEE20902D32827C00551EA7 /* ArtistChartRepository.swift in Sources */,
+				BA6F11A92D734BD500CAD5C6 /* FastestRecordViewModel.swift in Sources */,
 				BA253E972D2FF629003121ED /* AlbumChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

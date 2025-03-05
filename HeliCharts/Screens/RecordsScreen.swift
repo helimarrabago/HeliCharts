@@ -11,22 +11,33 @@ struct RecordsScreen: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink {
-                    WeeklyRecordScreen(recordType: .mostWeeklyUnits, viewModel: WeeklyRecordViewModel())
-                } label: {
-                    Text("Most units in a single week")
+                Section("Weekly records") {
+                    NavigationLink {
+                        WeeklyRecordScreen(recordType: .mostWeeklyUnits, viewModel: WeeklyRecordViewModel())
+                    } label: {
+                        Text("Most units in a single week")
+                    }
+
+                    NavigationLink {
+                        WeeklyRecordScreen(recordType: .biggestDebuts, viewModel: WeeklyRecordViewModel())
+                    } label: {
+                        Text("Biggest weekly debuts")
+                    }
+
+                    NavigationLink {
+                        WeeklyRecordScreen(recordType: .biggestPeaks, viewModel: WeeklyRecordViewModel())
+                    } label: {
+                        Text("Biggest weekly peaks")
+                    }
                 }
 
-                NavigationLink {
-                    WeeklyRecordScreen(recordType: .biggestDebuts, viewModel: WeeklyRecordViewModel())
-                } label: {
-                    Text("Biggest debuts")
-                }
+                Section("Fastest records") {
+                    NavigationLink {
+                        FastestRecordScreen(recordType: .milestoneUnits, viewModel: FastestRecordViewModel())
+                    } label: {
+                        Text("Fastest to reach milestone units")
+                    }
 
-                NavigationLink {
-                    WeeklyRecordScreen(recordType: .biggestPeaks, viewModel: WeeklyRecordViewModel())
-                } label: {
-                    Text("Biggest peaks")
                 }
             }
             .navigationTitle("Records")

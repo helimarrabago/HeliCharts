@@ -76,10 +76,10 @@ extension WeekRange {
         let toDate = Date(timeIntervalSince1970: TimeInterval(to))
 
         let fromString = fromDate.toFormat("MMM d")
-        let toString = toDate.toFormat("d")
+        let toString = toDate.toFormat("MMM d")
         let yearString = toDate.toFormat("yyyy")
 
-        return "\(fromString)-\(toString), \(yearString)"
+        return "\(fromString) - \(toString), \(yearString)"
     }
 
     func isImmediatelyBefore(week: WeekRange) -> Bool {

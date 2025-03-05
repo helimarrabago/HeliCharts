@@ -134,13 +134,22 @@ enum Certification: Hashable {
 enum ChartRunSnapshot {
     case charted(position: ChartPosition)
     case outOfChart(count: Int)
+
+    var position: ChartPosition? {
+        guard case .charted(let position) = self else { return nil }
+        return position
+    }
 }
 
 struct ChartPosition {
     let rank: Int
-    let units: Int
-    let runningUnits: Int
-    let date: Date
+    let streams: Int
+    let sales: Int
+    let totalUnits: Int
+    let runningStreams: Int
+    let runningSales: Int
+    let runningTotalUnits: Int
+    let week: WeekRange
     let weekNumber: Int
 }
 
@@ -207,4 +216,30 @@ struct WeeklyRecord {
     let position: Int
     let week: WeekRange
     let weekNumber: Int?
+}
+
+enum FastestRecordType {
+    case milestoneUnits
+}
+
+enum FastestRecordMilestone: Hashable {
+    case units(metric: ChartMetric, value: Int)
+
+    var displayName: String {
+        switch self {
+        case .units(let metric, let value):
+            return value.toDecimalFormat()
+        }
+    }
+}
+
+struct FastestRecord {
+    let name: String
+    let rank: Int
+    let streams: Int
+    let sales: Int
+    let units: Int
+    let runningUnits: Int
+    let week: WeekRange
+    let weekCount: Int
 }

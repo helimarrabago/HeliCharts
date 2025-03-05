@@ -24,9 +24,9 @@ struct ChartPositionUIModel: Identifiable {
 
     init(position: ChartPosition) {
         self.rank = "#\(position.rank)"
-        self.units = position.units.toDecimalFormat()
-        self.runningUnits = position.runningUnits.toDecimalFormat()
-        self.date = position.date.toFormat("MMM d, yyyy")
+        self.units = position.totalUnits.toDecimalFormat()
+        self.runningUnits = position.runningTotalUnits.toDecimalFormat()
+        self.date = Date(timeIntervalSince1970: TimeInterval(position.week.to)).toFormat("MMM d, yyyy")
         self.weekNumber = String(position.weekNumber)
     }
 

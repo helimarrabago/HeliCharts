@@ -24,6 +24,8 @@ protocol ChartRepository {
     static var mostWeeklyUnitsCache: [MetricKey: [WeeklyRecord]] { get set }
     static var biggestDebutsCache: [MetricKey: [WeeklyRecord]] { get set }
     static var biggestPeaksCache: [MetricKey: [WeeklyRecord]] { get set }
+    static var chartRunCache: [YearAndMilestoneValueKey<ChartEntryType>: [ChartRunSnapshot]] { get set }
+    static var fastestMilestoneUnitsCache: [MetricAndMilestoneValueKey: [FastestRecord]] { get set }
 }
 
 // MARK: - Entry-specific Methods
@@ -79,9 +81,13 @@ extension ChartRepository {
             let certifications = generateCertifications(for: entry, totalUnits: units.total)
             let position = ChartPosition(
                 rank: entry.finalRank,
-                units: units.total,
-                runningUnits: units.total,
-                date: Date(timeIntervalSince1970: TimeInterval(entry.week.from)),
+                streams: units.streamsEquivalent,
+                sales: units.sales,
+                totalUnits: units.total,
+                runningStreams: units.streamsEquivalent,
+                runningSales: units.sales,
+                runningTotalUnits: units.total,
+                week: entry.week,
                 weekNumber: getWeekNumber(of: entry.week))
             history = ChartOverallHistory(
                 parent: entry,
@@ -287,9 +293,16 @@ private extension ChartRepository {
         return certifications
     }
 
-    static func getChartRun(of entry: ChartEntryType, in year: Int?) -> [ChartRunSnapshot] {
+    static func getChartRun(of entry: ChartEntryType, in year: Int? = nil, milestoneValue: Int? = nil) -> [ChartRunSnapshot] {
+        let key = YearAndMilestoneValueKey(entry: entry, year: year, milestoneValue: milestoneValue)
+        if let cache = chartRunCache[key] {
+            return cache
+        }
+
         var chartRun: [ChartRunSnapshot] = []
-        var runningUnits = 0
+        var runningStreams = 0
+        var runningSales = 0
+        var runningTotalUnits = 0
 
         var allAppearances = Array(allCharts.value.reversed())
         guard
@@ -311,7 +324,7 @@ private extension ChartRepository {
         var weeksOnChart = 0; var weeksOffChart = 0
         var lastUnits: ChartEntryUnits<ChartEntryType>?
 
-        allAppearances.forEach { chart in
+        for chart in allAppearances {
             if let entry = chart.getSameEntry(as: entry) {
                 weeksOnChart += 1
 
@@ -320,7 +333,9 @@ private extension ChartRepository {
                         weeksOffChart: weeksOffChart,
                         weeksOnChart: weeksOnChart,
                         lastUnits: lastUnits)
-                    runningUnits += units.total
+                    runningStreams += units.streamsEquivalent
+                    runningSales += units.sales
+                    runningTotalUnits += units.total
 
                     chartRun.append(.outOfChart(count: weeksOffChart))
                     weeksOffChart = 0
@@ -328,20 +343,32 @@ private extension ChartRepository {
 
                 let units = entry.computeUnits(weeks: weeksOnChart)
                 lastUnits = units
-                runningUnits += units.total
+
+                runningStreams += units.streamsEquivalent
+                runningSales += units.sales
+                runningTotalUnits += units.total
 
                 let position = ChartPosition(
                     rank: entry.finalRank,
-                    units: units.total,
-                    runningUnits: runningUnits,
-                    date: Date(timeIntervalSince1970: TimeInterval(chart.week.to)),
+                    streams: units.streamsEquivalent,
+                    sales: units.sales,
+                    totalUnits: units.total,
+                    runningStreams: runningStreams,
+                    runningSales: runningSales,
+                    runningTotalUnits: runningTotalUnits,
+                    week: entry.week,
                     weekNumber: getWeekNumber(of: chart.week))
                 chartRun.append(.charted(position: position))
+
+                if let milestoneValue, runningTotalUnits >= milestoneValue {
+                    break
+                }
             } else {
                 weeksOffChart += 1
             }
         }
 
+        chartRunCache[key] = chartRun
         return chartRun
     }
 
@@ -765,6 +792,63 @@ extension ChartRepository {
 
         biggestPeaksCache[id] = biggestPeaks
         return biggestPeaks
+    }
+
+    static func generateFastestMilestoneUnits(metric: ChartMetric, value: Int) -> [FastestRecord] {
+        let key = MetricAndMilestoneValueKey(metric: metric, milestoneValue: value)
+        if let cache = fastestMilestoneUnitsCache[key] {
+            return cache
+        }
+
+        let uniqueEntries = Array(Set(allCharts.value.flatMap { $0.entries }))
+        let entriesWithChartRuns = [ChartEntryType: [ChartRunSnapshot]](uniqueKeysWithValues: uniqueEntries.compactMap { entry in
+            let chartRun = getChartRun(of: entry, milestoneValue: value)
+            guard chartRun.last!.position!.runningTotalUnits ?? 0 >= value else { return nil }
+            return (entry, chartRun)
+        })
+        let sortedEntries = entriesWithChartRuns.sorted { lhs, rhs in
+            let lhsChartRun = lhs.value
+            let rhsChartRun = rhs.value
+
+            let lhsWeeks = getTotalWeekCount(of: lhsChartRun)
+            let rhsWeeks = getTotalWeekCount(of: rhsChartRun)
+            if lhsWeeks != rhsWeeks {
+                return lhsWeeks < rhsWeeks
+            }
+
+            let lhsUnits = lhsChartRun.last!.position!.runningTotalUnits
+            let rhsUnits = rhsChartRun.last!.position!.runningTotalUnits
+            return lhsUnits > rhsUnits
+        }
+        let filteredEntries = Array(sortedEntries.prefix(20))
+
+        let fastestMilestoneUnits = filteredEntries.enumerated().map { index, element in
+            let entry = element.key
+            let chartRun = element.value
+            let lastChartPosition = chartRun.compactMap { $0.position }.last!
+
+            return FastestRecord(
+                name: [entry.artist?.name, entry.name].compactMap { $0 }.joined(separator: " - "),
+                rank: index + 1,
+                streams: lastChartPosition.streams,
+                sales: lastChartPosition.sales,
+                units: lastChartPosition.totalUnits,
+                runningUnits: lastChartPosition.runningTotalUnits,
+                week: lastChartPosition.week,
+                weekCount: getTotalWeekCount(of: chartRun))
+        }
+
+        fastestMilestoneUnitsCache[key] = fastestMilestoneUnits
+        return fastestMilestoneUnits
+
+        func getTotalWeekCount(of chartRun: [ChartRunSnapshot]) -> Int {
+            return chartRun.reduce(0) { partialResult, snapshot in
+                switch snapshot {
+                case .charted: partialResult + 1
+                case .outOfChart(let count): partialResult + count
+                }
+            }
+        }
     }
 }
 
