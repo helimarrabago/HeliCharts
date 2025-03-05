@@ -18,7 +18,10 @@ protocol AllTimeChartsViewModelProtocol: ObservableObject {
 final class AllTimeChartsViewModel: AllTimeChartsViewModelProtocol {
     private var cancellables: Set<AnyCancellable> = []
 
-    func generateAllTimeTrackChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
+    func generateAllTimeTrackChart(
+        metric: ChartMetric,
+        artistLimit: Int?
+    ) async -> [AllTimeChartEntryUIModel] {
         await withCheckedContinuation { continuation in
             TrackChartRepository.allCharts
                 .filter { !$0.isEmpty }
@@ -34,7 +37,10 @@ final class AllTimeChartsViewModel: AllTimeChartsViewModelProtocol {
         }
     }
 
-    func generateAllTimeAlbumChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
+    func generateAllTimeAlbumChart(
+        metric: ChartMetric,
+        artistLimit: Int?
+    ) async -> [AllTimeChartEntryUIModel] {
         await withCheckedContinuation { continuation in
             AlbumChartRepository.allCharts
                 .filter { !$0.isEmpty }

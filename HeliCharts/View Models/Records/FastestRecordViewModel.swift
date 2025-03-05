@@ -8,13 +8,25 @@
 import Foundation
 
 protocol FastestRecordViewModelProtocol: ObservableObject {
-    func fetchFastestTrackRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel]
-    func fetchFastestAlbumRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel]
-    func fetchFastestArtistRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel]
+    func fetchFastestTrackRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel]
+    func fetchFastestAlbumRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel]
+    func fetchFastestArtistRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel]
 }
 
 final class FastestRecordViewModel: FastestRecordViewModelProtocol {
-    func fetchFastestTrackRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+    func fetchFastestTrackRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel] {
         let fastestRecord: [FastestRecord]
         switch (type, milestone) {
         case (.milestoneUnits, .units(let metric, let value)):
@@ -24,7 +36,10 @@ final class FastestRecordViewModel: FastestRecordViewModelProtocol {
         return fastestRecord.map { FastestRecordUIModel(dataModel: $0) }
     }
 
-    func fetchFastestAlbumRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+    func fetchFastestAlbumRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel] {
         let fastestRecord: [FastestRecord]
         switch (type, milestone) {
         case (.milestoneUnits, .units(let metric, let value)):
@@ -34,7 +49,10 @@ final class FastestRecordViewModel: FastestRecordViewModelProtocol {
         return fastestRecord.map { FastestRecordUIModel(dataModel: $0) }
     }
 
-    func fetchFastestArtistRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+    func fetchFastestArtistRecord(
+        type: FastestRecordType,
+        milestone: FastestRecordMilestone
+    ) async -> [FastestRecordUIModel] {
         let fastestRecord: [FastestRecord]
         switch (type, milestone) {
         case (.milestoneUnits, .units(let metric, let value)):

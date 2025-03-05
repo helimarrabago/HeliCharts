@@ -293,7 +293,12 @@ private extension ChartRepository {
         return certifications
     }
 
-    static func getChartRun(of entry: ChartEntryType, in year: Int? = nil, milestoneValue: Int? = nil) -> [ChartRunSnapshot] {
+    // swiftlint:disable:next function_body_length
+    static func getChartRun(
+        of entry: ChartEntryType,
+        in year: Int? = nil,
+        milestoneValue: Int? = nil
+    ) -> [ChartRunSnapshot] {
         let key = YearAndMilestoneValueKey(entry: entry, year: year, milestoneValue: milestoneValue)
         if let cache = chartRunCache[key] {
             return cache
@@ -524,7 +529,7 @@ private extension ChartRepository {
         return yearlyCharts
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable:next function_body_length
     static func aggregateEntries(
         _ entries: [ChartEntryType],
         by metric: ChartMetric,
@@ -613,7 +618,6 @@ private extension ChartRepository {
 
         return aggregates
     }
-    // swiftlint:enable function_body_length
 
     static func sortAggregates(
         _ rawAggregates: [String: ChartEntryAggregate],
@@ -801,11 +805,12 @@ extension ChartRepository {
         }
 
         let uniqueEntries = Array(Set(allCharts.value.flatMap { $0.entries }))
-        let entriesWithChartRuns = [ChartEntryType: [ChartRunSnapshot]](uniqueKeysWithValues: uniqueEntries.compactMap { entry in
-            let chartRun = getChartRun(of: entry, milestoneValue: value)
-            guard chartRun.last!.position!.runningTotalUnits ?? 0 >= value else { return nil }
-            return (entry, chartRun)
-        })
+        let entriesWithChartRuns = [ChartEntryType: [ChartRunSnapshot]](
+            uniqueKeysWithValues: uniqueEntries.compactMap { entry in
+                let chartRun = getChartRun(of: entry, milestoneValue: value)
+                guard chartRun.last!.position!.runningTotalUnits >= value else { return nil }
+                return (entry, chartRun)
+            })
         let sortedEntries = entriesWithChartRuns.sorted { lhs, rhs in
             let lhsChartRun = lhs.value
             let rhsChartRun = rhs.value

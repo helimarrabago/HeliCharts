@@ -227,7 +227,7 @@ enum FastestRecordMilestone: Hashable {
 
     var displayName: String {
         switch self {
-        case .units(let metric, let value):
+        case .units(_, let value):
             return value.toDecimalFormat()
         }
     }

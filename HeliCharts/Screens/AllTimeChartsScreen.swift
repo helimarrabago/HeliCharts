@@ -59,12 +59,16 @@ struct AllTimeChartsScreen<ViewModel: AllTimeChartsViewModelProtocol>: View {
     private func generateAllTimeChart() async {
         switch chartKind {
         case .track:
-            let tracks = await viewModel.generateAllTimeTrackChart(metric: chartMetric, artistLimit: artistLimit)
+            let tracks = await viewModel.generateAllTimeTrackChart(
+                metric: chartMetric,
+                artistLimit: artistLimit)
             withAnimation {
                 self.tracks = tracks
             }
         case .album:
-            let albums = await viewModel.generateAllTimeAlbumChart(metric: chartMetric, artistLimit: artistLimit)
+            let albums = await viewModel.generateAllTimeAlbumChart(
+                metric: chartMetric,
+                artistLimit: artistLimit)
             withAnimation {
                 self.albums = albums
             }
@@ -156,7 +160,10 @@ private extension AllTimeChartsScreen {
 
 #Preview {
     final class MockViewModel: AllTimeChartsViewModelProtocol {
-        func generateAllTimeTrackChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
+        func generateAllTimeTrackChart(
+            metric: ChartMetric,
+            artistLimit: Int?
+        ) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Beyoncé - 6 Inch (feat. The Weeknd)",
@@ -170,7 +177,10 @@ private extension AllTimeChartsScreen {
                 parent: MockChartEntry())]
         }
 
-        func generateAllTimeAlbumChart(metric: ChartMetric, artistLimit: Int?) async -> [AllTimeChartEntryUIModel] {
+        func generateAllTimeAlbumChart(
+            metric: ChartMetric,
+            artistLimit: Int?
+        ) async -> [AllTimeChartEntryUIModel] {
             return [AllTimeChartEntryUIModel(
                 id: "1",
                 title: "Cowboy Carter",

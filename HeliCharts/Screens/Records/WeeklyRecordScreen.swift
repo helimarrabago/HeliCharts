@@ -163,7 +163,10 @@ private extension WeeklyRecordScreen {
 
 #Preview {
     final class MockViewModel: WeeklyRecordViewModelProtocol {
-        func fetchWeeklyTrackRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
+        func fetchWeeklyTrackRecord(
+            type: WeeklyRecordType,
+            metric: ChartMetric
+        ) async -> [WeeklyRecordUIModel] {
             return [
                 WeeklyRecordUIModel(
                     name: "Beyoncé - Formation",
@@ -176,7 +179,10 @@ private extension WeeklyRecordScreen {
             ]
         }
 
-        func fetchWeeklyAlbumRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
+        func fetchWeeklyAlbumRecord(
+            type: WeeklyRecordType,
+            metric: ChartMetric
+        ) async -> [WeeklyRecordUIModel] {
             return [
                 WeeklyRecordUIModel(
                     name: "Beyoncé - Lemonade",
@@ -189,7 +195,10 @@ private extension WeeklyRecordScreen {
             ]
         }
 
-        func fetchWeeklyArtistRecord(type: WeeklyRecordType, metric: ChartMetric) async -> [WeeklyRecordUIModel] {
+        func fetchWeeklyArtistRecord(
+            type: WeeklyRecordType,
+            metric: ChartMetric
+        ) async -> [WeeklyRecordUIModel] {
             return [
                 WeeklyRecordUIModel(
                     name: "Beyoncé",

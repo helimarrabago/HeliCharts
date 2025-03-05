@@ -216,7 +216,9 @@ private extension ChartEntryDetailsScreen {
         }
     }
 
-    func childEntriesView(_ childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>) -> some View {
+    func childEntriesView(
+        _ childEntries: OrderedDictionary<ChartKind, [ChildChartEntryUIModel]>
+    ) -> some View {
         ForEach(childEntries.elements, id: \.key) { element in
             Section {
                 childEntriesList(element.value)

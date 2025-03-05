@@ -217,7 +217,10 @@ private extension FastestRecordScreen {
 
 #Preview {
     final class MockViewModel: FastestRecordViewModelProtocol {
-        func fetchFastestTrackRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+        func fetchFastestTrackRecord(
+            type: FastestRecordType,
+            milestone: FastestRecordMilestone
+        ) async -> [FastestRecordUIModel] {
             return [
                 FastestRecordUIModel(
                     name: "Beyoncé - Formation",
@@ -230,7 +233,10 @@ private extension FastestRecordScreen {
             ]
         }
 
-        func fetchFastestAlbumRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+        func fetchFastestAlbumRecord(
+            type: FastestRecordType,
+            milestone: FastestRecordMilestone
+        ) async -> [FastestRecordUIModel] {
             return [
                 FastestRecordUIModel(
                     name: "Beyoncé - Lemonade",
@@ -243,7 +249,10 @@ private extension FastestRecordScreen {
             ]
         }
 
-        func fetchFastestArtistRecord(type: FastestRecordType, milestone: FastestRecordMilestone) async -> [FastestRecordUIModel] {
+        func fetchFastestArtistRecord(
+            type: FastestRecordType,
+            milestone: FastestRecordMilestone
+        ) async -> [FastestRecordUIModel] {
             return [
                 FastestRecordUIModel(
                     name: "Beyoncé",
